@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.*;
 public class PrimaryController {
     @GetMapping("/genericEndpoint")
     public String genericEndpoint() {
-        return "Hello World";
+        return "Hello World123";
     }
 }
