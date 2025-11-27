@@ -25,7 +25,7 @@ public class SecondaryController {
             fileStuff = Files.readString(filePath, StandardCharsets.UTF_8);
         }catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
-            fileStuff = "Hello World! I have errored. Again";
+            fileStuff = "Hello World! I have errored. Again. and again,sadly";
         }
         return fileStuff;
     }
