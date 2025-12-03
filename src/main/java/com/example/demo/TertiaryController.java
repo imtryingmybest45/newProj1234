@@ -14,7 +14,7 @@ import com.example.demo.FTPStuff;
 
 @RestController
 public class TertiaryController {
-    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/"})
+    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/","https://www.aprilshorrorcorner.com"})
     @PostMapping("/ftpEndpoint")
     public String getData(@RequestBody String content) {
         String fileStuff;
