@@ -6,7 +6,8 @@ import org.springframework.web.servlet.view.BeanNameViewResolver;
 public class Sandbox {
 
     public static void main(String[] args) throws Exception {
-        String githubToken = System.getenv("MY_AWESOME_PAT");
+        String githubToken = "hello";
+        //String githubToken = System.getenv("MY_AWESOME_PAT");
         //System.out.println("apiKey: " + apiKey);
         String owner = "imtryingmybest45";
         String repoName = "backEndAppCode";

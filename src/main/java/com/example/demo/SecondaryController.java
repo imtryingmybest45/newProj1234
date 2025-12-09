@@ -26,7 +26,8 @@ public class SecondaryController {
         OtherFunctions otherFunctions = new OtherFunctions();
         String name = newString;
         String repoName = "testFrontEndCode";
-        String gitToken = System.getenv("MY_AWESOME_PAT");
+        //String gitToken = System.getenv("MY_AWESOME_PAT");
+        String gitToken = "hello";
         System.out.println("Git token: " + gitToken);
 
         otherFunctions.writeNewPagesFile(name,repoName,gitToken,movieReview);
