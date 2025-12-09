@@ -26,6 +26,9 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        env: 
+          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }} # Access the GitHub secret
+  
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -60,4 +63,5 @@ jobs:
           app-name: 'TryingThisAgain'
           slot-name: 'Production'
           package: '*.jar'
+
           
