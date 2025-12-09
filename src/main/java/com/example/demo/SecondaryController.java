@@ -1,32 +1,63 @@
 package com.example.demo;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.kohsuke.github.*;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.charset.StandardCharsets;
 import java.io.IOException;
+import java.nio.file.StandardOpenOption;
 
 @RestController
 public class SecondaryController {
     @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/"})
     @PostMapping("/genericEndpoint123")
-    public String getData(@RequestBody String content) {
-        String fileStuff;
-        String urlName1 = content.replace("%2F", "");
-        String urlName2 = urlName1.replace("=", "");
-        String fileName = "C:\\Mac\\Home\\Documents\\SampleFolder\\"+urlName2+".txt"; // Replace with your file name
-        Path filePath = Paths.get(fileName);
-        try {
-            fileStuff = Files.readString(filePath, StandardCharsets.UTF_8);
-        }catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-            fileStuff = "Hello World! I have errored. Again. and again,sadly";
-        }
-        return fileStuff;
+    public String getData(@RequestBody MyRequestDTO requestDTO) throws IOException {
+
+        String content = requestDTO.getMovieName();
+        String movieReview = requestDTO.getMovieReview();
+
+        String nextString = content.substring(0, content.length());
+        String newString = nextString.replaceAll("\\s", "");
+
+        OtherFunctions otherFunctions = new OtherFunctions();
+        String name = newString;
+
+        otherFunctions.writeNewPagesFile(name,movieReview);
+        String origName = otherFunctions.getOrigName();
+        String newContent = otherFunctions.editRoutesAppFile(name);
+        String newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent);
+        String newContent3 = otherFunctions.addImportLine(name, newContent2);
+
+        //Path filePath1 = Paths.get(ppathNName);
+        //Files.writeString(filePath1, newContent3, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        //FTPStuff ftpsStuff = new FTPStuff();
+        //ftpsStuff.addFileToFTP(newString,movieReview);
+
+        String githubToken = "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"; // Replace with your token
+        String owner = "imtryingmybest45";
+        String repoName = "frontEndCode";
+        String filePath = "src/pages/Home.js";
+        String branch = "main"; // Or your target branch
+
+        GitHub github = new GitHubBuilder().withOAuthToken(githubToken).build();
+        GHRepository repo = github.getUser(owner).getRepository(repoName);
+
+        GHContent stuff = repo.getFileContent(filePath, branch);
+        String currentContent = new String(stuff.read().readAllBytes(), "UTF-8");
+
+        repo.createContent()
+                .path(filePath)
+                .content(newContent3.getBytes("UTF-8"))
+                .message("Updated file via Java API")
+                .sha(stuff.getSha()) // Important for optimistic locking
+                .branch(branch)
+                .commit();
+
+        return "You have submitted your review. Please wait a few minutes for the website to refresh.";
     }
 }

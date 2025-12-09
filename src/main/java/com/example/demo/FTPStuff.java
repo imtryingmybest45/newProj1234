@@ -1,6 +1,7 @@
 package com.example.demo;
 import java.io.*;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
 
@@ -55,5 +56,36 @@ public class FTPStuff {
         }
         String allStringContent = allInputText.toString();
         return allStringContent;
+    }
+
+    public static void addFileToFTP(String movieName, String movieReview) throws IOException {
+        FTPSClient ftpsClient = new FTPSClient();
+
+        System.setProperty("java.net.useSystemProxies", "true");
+        String user = "TryingThisAgain\\$TryingThisAgain";
+        String pass = "Gisg2abbEn6xhKY63Rzofzf7beSKvH2rF7tLbLJ72pCM5Zd9rrdcRzMyWCbh";
+
+        String server = "waws-prod-bn1-037.publish.azurewebsites.windows.net";
+        int port = 21;
+
+        System.out.println("Connecting to " + server + " on port " + port);
+        ftpsClient.connect(server, port);
+        System.out.println("Connected");
+        ftpsClient.login(user, pass);
+
+        ftpsClient.enterLocalPassiveMode();
+        String remoteFileName = "/site/wwwroot/"+movieName+".txt";
+
+        ftpsClient.setFileType(FTP.ASCII_FILE_TYPE); // For text files
+        try (InputStream inputStream = new ByteArrayInputStream(movieReview.getBytes())) {
+            boolean done = ftpsClient.storeFile(remoteFileName, inputStream);
+            if (done) {
+                System.out.println("The text file was uploaded successfully.");
+            } else {
+                System.out.println("Failed to upload the text file.");
+            }
+        }
+
+
     }
 }
