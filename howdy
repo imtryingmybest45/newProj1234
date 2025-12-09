@@ -26,6 +26,7 @@ function Home(props){
   let tfVar = props.name;
   let setTFVar = props.age;
   const [stvar, setMess] = useState('');
+  const hello = "hellow";
   const handleClick = (paramm) => {
     //axios.post('http://localhost:8080/ftpEndpoint',paramm)
     //axios.post('https://tryingthisagain-e6f8d0gqfmgsevft.eastus2-01.azurewebsites.net/ftpEndpoint',paramm)
