@@ -25,6 +25,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'microsoft'
+          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
         env:
           MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
 
@@ -38,6 +39,7 @@ jobs:
         with:
           name: java-app
           path: '${{ github.workspace }}/target/*.jar'
+          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
         env:
           MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
 
@@ -70,6 +72,7 @@ jobs:
           package: '*.jar'
 
           
+
 
 
 
