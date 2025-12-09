@@ -32,12 +32,12 @@ jobs:
           MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
           HEDGEHOG: "howdy"
 
-      - name: Set Azure app settings
+      - name: Set Azure App Setting
         run: |
           az webapp config appsettings set \
           --resource-group DefaultResourceGroup-EUS2 \
-          --name TringThisAgain \
-          --settings HEDGEHOG=howdy
+          --name TryingThisAgain \
+          --settings HEDGEHOG=${{ secrets.MY_AWESOME_PAT }}
 
       - name: Build with Maven
         run: mvn clean install
@@ -85,6 +85,7 @@ jobs:
           package: '*.jar'
 
           
+
 
 
 
