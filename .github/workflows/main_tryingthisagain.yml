@@ -14,10 +14,10 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read #This is required for actions/checkout
-
+    environment:
+      name: HelloAgain
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
@@ -39,7 +39,8 @@ jobs:
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
-
+    environment:
+      name: HelloAgain
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -60,4 +61,5 @@ jobs:
           app-name: 'TryingThisAgain'
           slot-name: 'Production'
           package: '*.jar'
+
           
