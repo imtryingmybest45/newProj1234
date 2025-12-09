@@ -34,6 +34,8 @@ jobs:
 
   deploy:
     runs-on: windows-latest
+    environment:
+      name: HelloAgain
     needs: build
     permissions:
       id-token: write #This is required for requesting the JWT
@@ -61,4 +63,5 @@ jobs:
           package: '*.jar'
 
           
+
 
