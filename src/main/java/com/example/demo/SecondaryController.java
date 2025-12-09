@@ -30,9 +30,9 @@ public class SecondaryController {
         String gitToken = "hello";
         System.out.println("Git token: " + gitToken);
 
-        otherFunctions.writeNewPagesFile(name,repoName,gitToken,movieReview);
-        String origName = otherFunctions.getOrigName(repoName,gitToken);
-        String newContent = otherFunctions.editRoutesAppFile(name,repoName,gitToken);
+        otherFunctions.writeNewPagesFile(name,repoName,movieReview);
+        String origName = otherFunctions.getOrigName(repoName);
+        String newContent = otherFunctions.editRoutesAppFile(name,repoName);
         String newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent);
         String newContent3 = otherFunctions.addImportLine(name, newContent2);
 
