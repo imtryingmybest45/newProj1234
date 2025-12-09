@@ -26,7 +26,6 @@ public class SecondaryController {
         OtherFunctions otherFunctions = new OtherFunctions();
         String name = newString;
         String repoName = "testFrontEndCode";
-        //String gitToken = "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";
         String gitToken = System.getenv("MY_AWESOME_PAT");
         System.out.println("Git token: " + gitToken);
 

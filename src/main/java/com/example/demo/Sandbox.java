@@ -8,8 +8,6 @@ public class Sandbox {
     public static void main(String[] args) throws Exception {
         String githubToken = System.getenv("MY_AWESOME_PAT");
         //System.out.println("apiKey: " + apiKey);
-        //String githubToken = "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";
-        //String githubToken = "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"; // Replace with your token
         String owner = "imtryingmybest45";
         String repoName = "backEndAppCode";
         String filePath = "demo/src/main/java/com/example/demo/DemoApplication.java";
