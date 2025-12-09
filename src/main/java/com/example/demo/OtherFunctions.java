@@ -110,8 +110,8 @@ public class OtherFunctions {
         return theLineNum;
     }
 
-    public static void writeNewPagesFile(String name, String repoName, String movieReview) throws IOException {
-        String githubToken = "hello";
+    public static void writeNewPagesFile(String name, String repoName, String gitToken, String movieReview) throws IOException {
+        String githubToken = gitToken;
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
         String filePath = "src/NewFunc.js";
@@ -163,9 +163,9 @@ public class OtherFunctions {
         }
         return index;
     }
-    public static String getOrigName(String repoName) throws IOException {
+    public static String getOrigName(String repoName, String gitToken) throws IOException {
 
-        String githubToken = "github";
+        String githubToken = gitToken;
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
         String filePath = "src/pages/Home.js";
@@ -188,9 +188,9 @@ public class OtherFunctions {
         String origName = desLine.substring(firstIndex + 2, secondIndex);
         return origName;
     }
-    public static String editRoutesAppFile(String name, String repoName) throws IOException {
+    public static String editRoutesAppFile(String name, String repoName, String gitToken) throws IOException {
         //String origFileCont = readJsFile(ppathNName);
-        String githubToken = "github";
+        String githubToken = gitToken;
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
         String filePath = "src/pages/Home.js";

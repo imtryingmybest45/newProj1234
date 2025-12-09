@@ -6,15 +6,14 @@ import org.springframework.web.servlet.view.BeanNameViewResolver;
 public class Sandbox {
 
     public static void main(String[] args) throws Exception {
-        String githubToken = "hello";
-        //String githubToken = System.getenv("MY_AWESOME_PAT");
+        String gitToken = System.getenv("MY_AWESOME_PAT");
         //System.out.println("apiKey: " + apiKey);
         String owner = "imtryingmybest45";
         String repoName = "backEndAppCode";
         String filePath = "demo/src/main/java/com/example/demo/DemoApplication.java";
         String branch = "main"; // Or your target branch
 
-        GitHub github = new GitHubBuilder().withOAuthToken(githubToken).build();
+        GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
         GHRepository repo = github.getUser(owner).getRepository(repoName);
 
         /*String filePath2 = "demo/src/main/java/com/example/demo/hellYeah.js";

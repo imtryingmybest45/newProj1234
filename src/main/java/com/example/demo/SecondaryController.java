@@ -26,13 +26,12 @@ public class SecondaryController {
         OtherFunctions otherFunctions = new OtherFunctions();
         String name = newString;
         String repoName = "testFrontEndCode";
-        //String gitToken = System.getenv("MY_AWESOME_PAT");
-        String gitToken = "hello";
+        String gitToken = System.getenv("MY_AWESOME_PAT");
         System.out.println("Git token: " + gitToken);
 
-        otherFunctions.writeNewPagesFile(name,repoName,movieReview);
-        String origName = otherFunctions.getOrigName(repoName);
-        String newContent = otherFunctions.editRoutesAppFile(name,repoName);
+        otherFunctions.writeNewPagesFile(name,repoName,gitToken,movieReview);
+        String origName = otherFunctions.getOrigName(repoName,gitToken);
+        String newContent = otherFunctions.editRoutesAppFile(name,repoName,gitToken);
         String newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent);
         String newContent3 = otherFunctions.addImportLine(name, newContent2);
 
