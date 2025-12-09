@@ -6,9 +6,7 @@ import org.springframework.web.servlet.view.BeanNameViewResolver;
 public class Sandbox {
 
     public static void main(String[] args) throws Exception {
-        //String gitToken = System.getenv("MY_AWESOME_PAT");
-        String gitToken = "hello";
-        //System.out.println("apiKey: " + apiKey);
+        String gitToken = System.getenv("MY_AWESOME_PAT");
         String owner = "imtryingmybest45";
         String repoName = "backEndAppCode";
         String filePath = "demo/src/main/java/com/example/demo/DemoApplication.java";
@@ -16,13 +14,6 @@ public class Sandbox {
 
         GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
         GHRepository repo = github.getUser(owner).getRepository(repoName);
-
-        /*String filePath2 = "demo/src/main/java/com/example/demo/hellYeah.js";
-        String fileContent = "This is the content of the new file.";
-        String commitMessage = "Add hellYeah";
-
-        repo.createContent(fileContent, commitMessage, filePath2);
-        System.out.println("File '" + filePath + "' added successfully.");*/
 
        // 1. Fetch file content
         GHContent content = repo.getFileContent(filePath, branch);

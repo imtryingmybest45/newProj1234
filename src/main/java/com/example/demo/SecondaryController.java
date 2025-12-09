@@ -17,7 +17,6 @@ public class SecondaryController {
     @PostMapping("/genericEndpoint123")
     public String getData(@RequestBody MyRequestDTO requestDTO) throws IOException {
 
-        //adding new line
         String content = requestDTO.getMovieName();
         String movieReview = requestDTO.getMovieReview();
 
@@ -26,8 +25,9 @@ public class SecondaryController {
 
         OtherFunctions otherFunctions = new OtherFunctions();
         String name = newString;
-        String repoName = "frontEndCode";
+        String repoName = "frontEndAppCode";
         String gitToken = System.getenv("MY_AWESOME_PAT");
+        System.out.println("Git Token: " + gitToken);
 
         otherFunctions.writeNewPagesFile(name,repoName,gitToken,movieReview);
         String origName = otherFunctions.getOrigName(repoName,gitToken);
