@@ -110,8 +110,8 @@ public class OtherFunctions {
         return theLineNum;
     }
 
-    public static void writeNewPagesFile(String name, String repoName, String movieReview) throws IOException {
-        String githubToken = "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"; // Replace with your token
+    public static void writeNewPagesFile(String name, String repoName, String gitToken, String movieReview) throws IOException {
+        String githubToken = gitToken; // Replace with your token
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
         String filePath = "src/NewFunc.js";
@@ -163,9 +163,9 @@ public class OtherFunctions {
         }
         return index;
     }
-    public static String getOrigName(String repoName) throws IOException {
-
-        String githubToken = "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"; // Replace with your token
+    public static String getOrigName(String repoName, String gitToken) throws IOException {
+        String githubToken = gitToken;
+        //String githubToken = "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"; // Replace with your token
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
         String filePath = "src/pages/Home.js";
@@ -188,9 +188,10 @@ public class OtherFunctions {
         String origName = desLine.substring(firstIndex + 2, secondIndex);
         return origName;
     }
-    public static String editRoutesAppFile(String name, String repoName) throws IOException {
+    public static String editRoutesAppFile(String name, String repoName, String gitToken) throws IOException {
         //String origFileCont = readJsFile(ppathNName);
-        String githubToken = "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"; // Replace with your token
+        String githubToken = gitToken;
+        //String githubToken = "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"; // Replace with your token
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
         String filePath = "src/pages/Home.js";

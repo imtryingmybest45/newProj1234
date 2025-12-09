@@ -25,11 +25,12 @@ public class SecondaryController {
 
         OtherFunctions otherFunctions = new OtherFunctions();
         String name = newString;
-        String repoName = "frontEndCode";
+        String repoName = "testFrontEndCode";
+        String gitToken = "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";
 
-        otherFunctions.writeNewPagesFile(name,repoName,movieReview);
-        String origName = otherFunctions.getOrigName(repoName);
-        String newContent = otherFunctions.editRoutesAppFile(name,repoName);
+        otherFunctions.writeNewPagesFile(name,repoName,gitToken,movieReview);
+        String origName = otherFunctions.getOrigName(repoName,gitToken);
+        String newContent = otherFunctions.editRoutesAppFile(name,repoName,gitToken);
         String newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent);
         String newContent3 = otherFunctions.addImportLine(name, newContent2);
 
@@ -39,7 +40,7 @@ public class SecondaryController {
         //FTPStuff ftpsStuff = new FTPStuff();
         //ftpsStuff.addFileToFTP(newString,movieReview);
 
-        String githubToken = "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"; // Replace with your token
+        String githubToken = gitToken; // Replace with your token
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
         String filePath = "src/pages/Home.js";
