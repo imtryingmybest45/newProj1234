@@ -17,6 +17,7 @@ public class SecondaryController {
     @PostMapping("/genericEndpoint123")
     public String getData(@RequestBody MyRequestDTO requestDTO) throws IOException {
 
+        //adding new line
         String content = requestDTO.getMovieName();
         String movieReview = requestDTO.getMovieReview();
 
