@@ -25,9 +25,8 @@ public class SecondaryController {
 
         OtherFunctions otherFunctions = new OtherFunctions();
         String name = newString;
-        String repoName = "testFrontEndCode";
+        String repoName = "frontEndCode";
         String gitToken = System.getenv("MY_AWESOME_PAT");
-        System.out.println("Git token: " + gitToken);
 
         otherFunctions.writeNewPagesFile(name,repoName,gitToken,movieReview);
         String origName = otherFunctions.getOrigName(repoName,gitToken);
@@ -35,15 +34,8 @@ public class SecondaryController {
         String newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent);
         String newContent3 = otherFunctions.addImportLine(name, newContent2);
 
-        //Path filePath1 = Paths.get(ppathNName);
-        //Files.writeString(filePath1, newContent3, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-        //FTPStuff ftpsStuff = new FTPStuff();
-        //ftpsStuff.addFileToFTP(newString,movieReview);
-
         String githubToken = gitToken; // Replace with your token
         String owner = "imtryingmybest45";
-        //String repoName = "frontEndCode";
         String filePath = "src/pages/Home.js";
         String branch = "main"; // Or your target branch
 
