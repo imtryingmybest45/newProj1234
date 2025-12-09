@@ -5,7 +5,8 @@ import org.kohsuke.github.*;
 public class Sandbox {
 
     public static void main(String[] args) throws Exception {
-        String githubToken = "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"; // Replace with your token
+        String githubToken = "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";
+        //String githubToken = "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"; // Replace with your token
         String owner = "imtryingmybest45";
         String repoName = "backEndAppCode";
         String filePath = "demo/src/main/java/com/example/demo/DemoApplication.java";
