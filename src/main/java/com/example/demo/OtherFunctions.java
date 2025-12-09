@@ -112,6 +112,7 @@ public class OtherFunctions {
 
     public static void writeNewPagesFile(String name, String repoName, String movieReview) throws IOException {
         String githubToken = "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"; // Replace with your token
+        String hello = "hello";
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
         String filePath = "src/NewFunc.js";
