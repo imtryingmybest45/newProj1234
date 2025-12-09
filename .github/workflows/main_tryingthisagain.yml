@@ -14,6 +14,9 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read #This is required for actions/checkout
+    env:
+        MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
+      
 
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +25,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'microsoft'
+          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
         env:
           MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
 
@@ -35,6 +39,7 @@ jobs:
         with:
           name: java-app
           path: '${{ github.workspace }}/target/*.jar'
+          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
         env:
           MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
 
@@ -67,6 +72,8 @@ jobs:
           package: '*.jar'
 
           
+
+
 
 
 
