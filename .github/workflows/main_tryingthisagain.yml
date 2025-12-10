@@ -34,7 +34,7 @@ jobs:
 
       - name: Set Azure App Setting
         env:
-          RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+          RESOURCE_GROUP: "THis is a secret"
         run: |
           az webapp config appsettings set \
           --resource-group "$RESOURCE_GROUP" \
@@ -87,6 +87,7 @@ jobs:
           package: '*.jar'
 
           
+
 
 
 
