@@ -134,7 +134,7 @@ public class OtherFunctions {
         // Replace all blank lines with the specified substring
         String modifiedString = movieReview.replaceAll("(?m)^\\s*\\r?\\n", replacementSubstring + "\n");
 
-        String fileContent2 = fileContent.replace("{name}",modifiedString);
+        String fileContent2 = fileContent.replace("Insert shit here",modifiedString);
 
         String filePath2 = "src/pages/"+name+".js";
         String commitMessage = "Add hellYeah";
