@@ -249,7 +249,8 @@ public class OtherFunctions {
     }
 
     public static String addSpacesToString(String s){
-        String modifiedString = s.replaceAll("(?<!^)(?=[A-Z])", " ");
+        String modifiedString = s.replaceAll("(?<!^)(?=[A-Z0-9])", " ");
+        //String modifiedString = s.replaceAll("(?<!^)(?=[A-Z])", " ");
 
         String[] words = modifiedString.split("\\s+");
         List<String> wordsList = new ArrayList<>();
