@@ -42,19 +42,20 @@ public class SecondaryController {
         String branch = "main"; // Or your target branch
 
         GitHub github2 = new GitHubBuilder().withOAuthToken(gitToken).build();
-        GHRepository repo = github2.getUser(owner).getRepository(repoName);
+        GHRepository repo2 = github2.getUser(owner).getRepository(repoName);
 
-        GHContent stuff = repo.getFileContent(filePath, branch);
+        GHContent stuff = repo2.getFileContent(filePath, branch);
         String currentContent = new String(stuff.read().readAllBytes(), "UTF-8");
 
-        /*repo.createContent()
+        repo2.createContent()
                 .path(filePath)
                 .content(newContent3.getBytes("UTF-8"))
                 .message("Updated file via Java API")
                 .sha(stuff.getSha()) // Important for optimistic locking
                 .branch(branch)
-                .commit();*/
-        repo.createContent(newContent3, "heello", filePath);
+                .commit();
+
+        //repo.createContent(newContent3, "heello", filePath);
 
         return "You have submitted your review. Please wait a few minutes for the website to refresh.";
 
