@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  HEDGEHOG: "hello"
+
 jobs:
   build:
     runs-on: windows-latest
@@ -60,4 +63,5 @@ jobs:
           app-name: 'TryingThisAgain'
           slot-name: 'Production'
           package: '*.jar'
+
           
