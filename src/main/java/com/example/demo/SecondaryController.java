@@ -47,13 +47,14 @@ public class SecondaryController {
         GHContent stuff = repo.getFileContent(filePath, branch);
         String currentContent = new String(stuff.read().readAllBytes(), "UTF-8");
 
-        repo.createContent()
+        /*repo.createContent()
                 .path(filePath)
                 .content(newContent3.getBytes("UTF-8"))
                 .message("Updated file via Java API")
                 .sha(stuff.getSha()) // Important for optimistic locking
                 .branch(branch)
-                .commit();
+                .commit();*/
+        repo.createContent(newContent3, "heello", filePath);
 
         return "You have submitted your review. Please wait a few minutes for the website to refresh.";
 
