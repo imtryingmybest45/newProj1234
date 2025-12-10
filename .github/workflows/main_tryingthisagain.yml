@@ -14,16 +14,15 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read #This is required for actions/checkout
-      
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
-
-      - name: Set Azure App Setting
 
       - name: Build with Maven
         run: mvn clean install
@@ -50,9 +49,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_84D4F6FFEF424434B28A98CBAB818022 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F8CCD5235CC64864B974D2991D206664 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1EF67A3417684954AD7189D495E7BA04 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1D85489CA5AE4195B32695C97FE84555 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9889C205556C408493333A60C1DA794D }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_532270F7D04C4FB49F26D2A79FDE1207 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -61,20 +60,4 @@ jobs:
           app-name: 'TryingThisAgain'
           slot-name: 'Production'
           package: '*.jar'
-
           
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
