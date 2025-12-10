@@ -28,7 +28,7 @@ public class SecondaryController {
         String repoName = "frontEndAppCode";
         //String gitToken = System.getenv("MY_AWESOME_PAT");
         String gitToken = System.getenv("HEDGEHOG");
-        /*System.out.println("Git Token: " + gitToken);
+        System.out.println("Git Token: " + gitToken);
 
         otherFunctions.writeNewPagesFile(name,repoName,gitToken,movieReview);
         String origName = otherFunctions.getOrigName(repoName,gitToken);
@@ -55,12 +55,7 @@ public class SecondaryController {
                 .branch(branch)
                 .commit();
 
-        return "You have submitted your review. Please wait a few minutes for the website to refresh.";*/
-        if (gitToken == null) {
-            return "myString is null";
-        } else {
-            return gitToken;
-        }
+        return "You have submitted your review. Please wait a few minutes for the website to refresh.";
 
     }
 }
