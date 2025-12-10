@@ -2,6 +2,8 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
 name: Build and deploy JAR app to Azure Web App - TryingThisAgain
+env:
+  HEDGEHOG: "global_value"
 
 on:
   push:
@@ -14,11 +16,7 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read #This is required for actions/checkout
-    env:
-        MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
-        HEDGEHOG: "howdy"
       
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up Java version
@@ -26,37 +24,17 @@ jobs:
         with:
           java-version: '17'
           distribution: 'microsoft'
-          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
-          HEDGEHOG: "howdy"
-        env:
-          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
-          HEDGEHOG: "howdy"
 
       - name: Set Azure App Setting
-        env:
-          RESOURCE_GROUP: "THis is a secret"
-        run: |
-          az webapp config appsettings set \
-          --resource-group "$RESOURCE_GROUP" \
-          --name "TryingThisAgain" \
-          --settings HEDGEHOG=${{ secrets.MY_AWESOME_PAT }}
 
       - name: Build with Maven
         run: mvn clean install
-        env:
-          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
-          HEDGEHOG: "howdy"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
           path: '${{ github.workspace }}/target/*.jar'
-          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
-          HEDGEHOG: "howdy"
-        env:
-          MY_AWESOME_PAT: ${{ secrets.MY_AWESOME_PAT }}
-          HEDGEHOG: "howdy"
 
   deploy:
     runs-on: windows-latest
@@ -87,6 +65,7 @@ jobs:
           package: '*.jar'
 
           
+
 
 
 
