@@ -36,13 +36,13 @@ public class SecondaryController {
         String newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent);
         String newContent3 = otherFunctions.addImportLine(name, newContent2);
 
-        String githubToken = gitToken; // Replace with your token
+        //String githubToken = gitToken; // Replace with your token
         String owner = "imtryingmybest45";
         String filePath = "src/pages/Home.js";
         String branch = "main"; // Or your target branch
 
-        GitHub github = new GitHubBuilder().withOAuthToken(githubToken).build();
-        GHRepository repo = github.getUser(owner).getRepository(repoName);
+        GitHub github2 = new GitHubBuilder().withOAuthToken(gitToken).build();
+        GHRepository repo = github2.getUser(owner).getRepository(repoName);
 
         GHContent stuff = repo.getFileContent(filePath, branch);
         String currentContent = new String(stuff.read().readAllBytes(), "UTF-8");
