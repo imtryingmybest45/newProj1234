@@ -32,7 +32,7 @@ public class SecondaryController {
         String gitToken = System.getenv("HEDGEHOG");
         System.out.println("Git Token: " + gitToken);
 
-        otherFunctions.writeNewPagesFile(name,repoName,gitToken,movieReview);
+        otherFunctions.writeNewPagesFile(nextString, name,repoName,gitToken,movieReview);
         Timer timer = new Timer(); // Create a Timer object
         TimerTask task = new TimerTask() {
             @Override
@@ -45,7 +45,7 @@ public class SecondaryController {
                 }
                 String newContent = null;
                 try {
-                    newContent = otherFunctions.editRoutesAppFile(nextString,name,repoName,gitToken);
+                    newContent = otherFunctions.editRoutesAppFile(name,repoName,gitToken);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
