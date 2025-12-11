@@ -51,7 +51,7 @@ public class SecondaryController {
                 }
                 String newContent2 = null;
                 try {
-                    newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent);
+                    newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent, nextString);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

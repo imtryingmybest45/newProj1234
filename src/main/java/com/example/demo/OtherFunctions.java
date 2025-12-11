@@ -217,7 +217,7 @@ public class OtherFunctions {
         return newContent;
     }
 
-    public static String editLinksAppFile(String name, String origName, String newContentRev1) throws IOException {
+    public static String editLinksAppFile(String name, String origName, String newContentRev1, String nextString) throws IOException {
         int targetLine = findSubstringLines(newContentRev1, "return");
         String[] newContRev1StrList = newContentRev1.split("\r?\n");
         List<String> newContRev1StrArrList = new ArrayList<>(Arrays.asList(newContRev1StrList));
@@ -228,7 +228,7 @@ public class OtherFunctions {
         desString = desString.replaceFirst(prevLinkNumber, newLinkNumber);
         String origNameWithSpaces = addSpacesToString(origName);
         String newNameWithSpaces = addSpacesToString(name);
-        desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
+        desString = desString.replaceFirst(origNameWithSpaces, nextString);
         desString = desString.replaceFirst(origName, name);
 
         newContRev1StrArrList.add(prevTargetLine + 1, desString);
