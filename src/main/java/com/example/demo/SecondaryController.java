@@ -135,7 +135,8 @@ public class SecondaryController {
         //repo.createContent(newContent3, "heello", filePath);
 
         return "You have submitted your review. Please wait a few minutes for the website to refresh.";*/
-        timer.schedule(task, 300000);
+        //timer.schedule(task, 300000);
+        timer.schedule(task,150000);
         return "You have submitted your review. Please wait a few minutes for the website to refresh.";
 
     }
