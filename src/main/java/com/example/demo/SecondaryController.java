@@ -15,7 +15,7 @@ import java.util.TimerTask;
 
 @RestController
 public class SecondaryController {
-    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/"})
+    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/","https://www.aprilshorrorcorner.com","https://aprilshorrorcorner.com"})
     @PostMapping("/genericEndpoint123")
     public String getData(@RequestBody MyRequestDTO requestDTO) throws IOException {
 
@@ -45,7 +45,7 @@ public class SecondaryController {
                 }
                 String newContent = null;
                 try {
-                    newContent = otherFunctions.editRoutesAppFile(name,repoName,gitToken);
+                    newContent = otherFunctions.editRoutesAppFile(nextString,name,repoName,gitToken);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

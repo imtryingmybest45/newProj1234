@@ -110,7 +110,7 @@ public class OtherFunctions {
         return theLineNum;
     }
 
-    public static void writeNewPagesFile(String name, String repoName, String gitToken, String movieReview) throws IOException {
+    public static void writeNewPagesFile(String movieName, String name, String repoName, String gitToken, String movieReview) throws IOException {
         String githubToken = gitToken;
         String owner = "imtryingmybest45";
         //String repoName = "frontEndCode";
@@ -135,11 +135,12 @@ public class OtherFunctions {
         String modifiedString = movieReview.replaceAll("(?m)^\\s*\\r?\\n", replacementSubstring + "\n");
 
         String fileContent2 = fileContent.replace("Insert shit here",modifiedString);
+        String fileContent3 = fileContent2.replace("Insert movie name here",movieName);
 
         String filePath2 = "src/pages/"+name+".js";
         String commitMessage = "Add hellYeah";
 
-        repo.createContent(fileContent2, commitMessage, filePath2);
+        repo.createContent(fileContent3, commitMessage, filePath2);
         System.out.println("File '" + filePath + "' added successfully.");
 
         //Path filePath = Paths.get(fileName);
