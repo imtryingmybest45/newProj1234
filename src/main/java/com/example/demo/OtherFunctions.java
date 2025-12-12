@@ -228,8 +228,8 @@ public class OtherFunctions {
         desString = desString.replaceFirst(prevLinkNumber, newLinkNumber);
         String origNameWithSpaces = addSpacesToString(origName);
         String newNameWithSpaces = addSpacesToString(name);
-        //desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
-        desString = desString.replaceFirst(origNameWithSpaces, nextString);
+        desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
+        //desString = desString.replaceFirst(origNameWithSpaces, nextString);
         desString = desString.replaceFirst(origName, name);
 
         newContRev1StrArrList.add(prevTargetLine + 1, desString);
