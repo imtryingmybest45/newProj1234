@@ -3,35 +3,73 @@ package com.example.demo;
 import org.kohsuke.github.*;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Sandbox {
 
     public static void main(String[] args) throws Exception {
-        String gitToken = System.getenv("MY_AWESOME_PAT");
-        String owner = "imtryingmybest45";
-        String repoName = "backEndAppCode";
-        String filePath = "demo/src/main/java/com/example/demo/DemoApplication.java";
-        String branch = "main"; // Or your target branch
+        String filePath = "C:\\Windows\\System32\\testFrontEndCode\\src\\pages\\Home.js";
+        OtherFunctions otherFunctions = new OtherFunctions();
+        String origFileCont = otherFunctions.readJsFile(filePath);
+        int targetLine = otherFunctions.findSubstringLines(origFileCont, "</Routes>");
+        String[] linesArray = origFileCont.split("\r?\n");
+        List<String> origFileContList = new ArrayList<>(Arrays.asList(linesArray));
+        int lineline = targetLine - 1;
+        String desLine = origFileContList.get(lineline).toString();
+        int firstIndex = desLine.indexOf("\"");
+        int secondIndex = desLine.indexOf("\"", firstIndex + 1);
+        String origName = desLine.substring(firstIndex + 2, secondIndex);
 
-        GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
-        GHRepository repo = github.getUser(owner).getRepository(repoName);
+        // added 12/13/2025
+        int targetLine2 = otherFunctions.findSubstringLines(origFileCont, "return")-2;
+        String desLine2 = origFileContList.get(targetLine2).toString();
+        int firstIndex2 = otherFunctions.findNthOccurrence(desLine2, "'",1);
+        int secondIndex2 = otherFunctions.findNthOccurrence(desLine2, "'",2);
+        String origNameAsTyped = desLine2.substring(firstIndex2 + 1, secondIndex2);
 
-       // 1. Fetch file content
-        GHContent content = repo.getFileContent(filePath, branch);
-        String currentContent = new String(content.read().readAllBytes(), "UTF-8");
+        List<String> nameList = new ArrayList<>();
+        nameList.add(origName);
+        nameList.add(origNameAsTyped);
 
-        // 2. Modify content (example: append a line)
-        String newContent = currentContent + "\n// Added by Java application";
+        String origNameWithSpaces = nameList.get(1);
+        String nextString = "The Autopsy of Jane Doe";
 
-        // 3. Commit and push changes
-        repo.createContent()
-                .path(filePath)
-                .content(newContent.getBytes("UTF-8"))
-                .message("Updated file via Java API")
-                .sha(content.getSha()) // Important for optimistic locking
-                .branch(branch)
-                .commit();
+        String name = "TheAutopsyOfJaneDoe";
 
-        System.out.println("File updated successfully!");
+        int targetLine23 = otherFunctions.findSubstringLines(origFileCont, "</Routes>");
+        String[] linesArray2 = origFileCont.split("\r?\n");
+        List<String> origFileContList2 = new ArrayList<>(Arrays.asList(linesArray2));
+        int lineline2 = targetLine - 1;
+        String desLine23 = origFileContList2.get(lineline2).toString();
+        int firstIndex23 = desLine23.indexOf("\"");
+        int secondIndex23 = desLine23.indexOf("\"", firstIndex23 + 1);
+        String origName2 = desLine23.substring(firstIndex23 + 2, secondIndex23);
+        String newContentLine = desLine.replace(origName2, name);
+        origFileContList.add(targetLine23, newContentLine);
+        String newContentRev1 = String.join("\n", origFileContList);
+
+        int targetLine34 = otherFunctions.findSubstringLines(newContentRev1, "return");
+        String[] newContRev1StrList = newContentRev1.split("\r?\n");
+        List<String> newContRev1StrArrList = new ArrayList<>(Arrays.asList(newContRev1StrList));
+        int prevTargetLine = targetLine34 - 2;
+        String desString = newContRev1StrArrList.get(prevTargetLine).toString();
+        String newLinkNumber = Integer.toString(otherFunctions.getIDNumber(desString));
+        String prevLinkNumber = Integer.toString(otherFunctions.getIDNumber(desString) - 1);
+        desString = desString.replaceFirst(prevLinkNumber, newLinkNumber);
+        //String origNameWithSpaces = addSpacesToString(origName);
+        //String newNameWithSpaces = addSpacesToString(name);
+        //desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
+        desString = desString.replaceFirst(origNameWithSpaces, nextString);
+        desString = desString.replaceFirst(origName, name);
+
+        newContRev1StrArrList.add(prevTargetLine + 1, desString);
+        String newContentRev2 = String.join("\n", newContRev1StrArrList);
+
+        System.out.println(newContentRev2);
+
+
     }
 }
 

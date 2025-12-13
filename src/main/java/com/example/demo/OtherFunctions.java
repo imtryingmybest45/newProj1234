@@ -164,7 +164,7 @@ public class OtherFunctions {
         }
         return index;
     }
-    public static String getOrigName(String repoName, String gitToken) throws IOException {
+    public static List<String> getOrigName(String repoName, String gitToken) throws IOException {
 
         String githubToken = gitToken;
         String owner = "imtryingmybest45";
@@ -187,7 +187,19 @@ public class OtherFunctions {
         int firstIndex = desLine.indexOf("\"");
         int secondIndex = desLine.indexOf("\"", firstIndex + 1);
         String origName = desLine.substring(firstIndex + 2, secondIndex);
-        return origName;
+
+        // added 12/13/2025
+        int targetLine2 = findSubstringLines(origFileCont, "return")-2;
+        String desLine2 = origFileContList.get(targetLine2).toString();
+        int firstIndex2 = findNthOccurrence(desLine2, "'",1);
+        int secondIndex2 = findNthOccurrence(desLine2, "'",2);
+        String origNameAsTyped = desLine2.substring(firstIndex2 + 1, secondIndex2);
+
+        List<String> nameList = new ArrayList<>();
+        nameList.add(origName);
+        nameList.add(origNameAsTyped);
+
+        return nameList;
     }
     public static String editRoutesAppFile(String name, String repoName, String gitToken) throws IOException {
         //String origFileCont = readJsFile(ppathNName);
@@ -217,7 +229,7 @@ public class OtherFunctions {
         return newContent;
     }
 
-    public static String editLinksAppFile(String name, String origName, String newContentRev1, String nextString) throws IOException {
+    public static String editLinksAppFile(String name, String origName, String origNameWithSpaces, String newContentRev1, String nextString) throws IOException {
         int targetLine = findSubstringLines(newContentRev1, "return");
         String[] newContRev1StrList = newContentRev1.split("\r?\n");
         List<String> newContRev1StrArrList = new ArrayList<>(Arrays.asList(newContRev1StrList));
@@ -226,10 +238,10 @@ public class OtherFunctions {
         String newLinkNumber = Integer.toString(getIDNumber(desString));
         String prevLinkNumber = Integer.toString(getIDNumber(desString) - 1);
         desString = desString.replaceFirst(prevLinkNumber, newLinkNumber);
-        String origNameWithSpaces = addSpacesToString(origName);
-        String newNameWithSpaces = addSpacesToString(name);
-        desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
-        //desString = desString.replaceFirst(origNameWithSpaces, nextString);
+        //String origNameWithSpaces = addSpacesToString(origName);
+        //String newNameWithSpaces = addSpacesToString(name);
+        //desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
+        desString = desString.replaceFirst(origNameWithSpaces, nextString);
         desString = desString.replaceFirst(origName, name);
 
         newContRev1StrArrList.add(prevTargetLine + 1, desString);

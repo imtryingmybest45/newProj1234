@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,8 +40,12 @@ public class SecondaryController {
             @Override
             public void run() {
                 String origName = null;
+                String origNameWithSpaces = null;
+                List<String> fruits = new ArrayList<>();
                 try {
-                    origName = otherFunctions.getOrigName(repoName,gitToken);
+                    fruits = otherFunctions.getOrigName(repoName,gitToken);
+                    origName = fruits.get(0);
+                    origNameWithSpaces = fruits.get(1);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -51,7 +57,7 @@ public class SecondaryController {
                 }
                 String newContent2 = null;
                 try {
-                    newContent2 = otherFunctions.editLinksAppFile(name, origName, newContent, nextString);
+                    newContent2 = otherFunctions.editLinksAppFile(name, origName, origNameWithSpaces, newContent, nextString);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
