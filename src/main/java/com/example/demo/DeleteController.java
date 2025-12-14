@@ -14,6 +14,7 @@ public class DeleteController {
     public String deleteData(@RequestBody String movieName) throws IOException {
         String nextString = movieName.substring(0, movieName.length() - 1);
         String newName = nextString.replace("+", " ");
+        String newNameWithoutSpaces = newName.replace(" ", "");
 
         OtherFunctions otherFunctions = new OtherFunctions();
         String repoName = "frontEndAppCode";
@@ -38,7 +39,7 @@ public class DeleteController {
                 .branch(branch)
                 .commit();
 
-        String filePath2 = "src/pages/" + newName + ".js";
+        String filePath2 = "src/pages/" + newNameWithoutSpaces + ".js";
         Timer timer = new Timer(); // Create a Timer object
         TimerTask task = new TimerTask() {
             @Override
