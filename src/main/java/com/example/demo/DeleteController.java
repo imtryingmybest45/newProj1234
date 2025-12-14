@@ -45,9 +45,12 @@ public class DeleteController {
             @Override
             public void run() {
                 try {
-                    GHContent hello = repo.getFileContent(filePath2, branch);
-                    GHContentUpdateResponse deleteResponse = hello.delete("wow how are you");
+                    GitHub github2 = new GitHubBuilder().withOAuthToken(gitToken).build();
+                    GHRepository repo2 = github2.getUser(owner).getRepository(repoName);
+                    GHContent hello = repo2.getFileContent(filePath2, branch);
+                    hello.delete("wow how are you");
                 } catch (IOException e) {
+                    System.err.println("An error occurred: " + e.getMessage());
                     throw new RuntimeException(e);
                 }
             }

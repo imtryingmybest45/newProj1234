@@ -230,10 +230,12 @@ public class OtherFunctions {
     }
 
     public static String editLinksAppFile(String name, String origName, String origNameWithSpaces, String newContentRev1, String nextString) throws IOException {
-        int targetLine = findSubstringLines(newContentRev1, "return");
+        //int targetLine = findSubstringLines(newContentRev1, "return");
+        int targetLine = findSubstringLines(newContentRev1, "const stvar = \"hello\"");
         String[] newContRev1StrList = newContentRev1.split("\r?\n");
         List<String> newContRev1StrArrList = new ArrayList<>(Arrays.asList(newContRev1StrList));
-        int prevTargetLine = targetLine - 2;
+        int prevTargetLine = targetLine - 3;
+        //int prevTargetLine = targetLine - 2;
         String desString = newContRev1StrArrList.get(prevTargetLine).toString();
         String newLinkNumber = Integer.toString(getIDNumber(desString));
         String prevLinkNumber = Integer.toString(getIDNumber(desString) - 1);
