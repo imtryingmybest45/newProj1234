@@ -5,71 +5,34 @@ import org.springframework.web.servlet.view.BeanNameViewResolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Sandbox {
 
     public static void main(String[] args) throws Exception {
+        String movieName = "The Autopsy of Jane Doe";
         String filePath = "C:\\Windows\\System32\\testFrontEndCode\\src\\pages\\Home.js";
         OtherFunctions otherFunctions = new OtherFunctions();
         String origFileCont = otherFunctions.readJsFile(filePath);
-        int targetLine = otherFunctions.findSubstringLines(origFileCont, "</Routes>");
-        String[] linesArray = origFileCont.split("\r?\n");
-        List<String> origFileContList = new ArrayList<>(Arrays.asList(linesArray));
-        int lineline = targetLine - 1;
-        String desLine = origFileContList.get(lineline).toString();
-        int firstIndex = desLine.indexOf("\"");
-        int secondIndex = desLine.indexOf("\"", firstIndex + 1);
-        String origName = desLine.substring(firstIndex + 2, secondIndex);
+        String[] words = origFileCont.split("\\R");
+        ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(words));
+        String movNameWithoutSpaces = movieName.replaceAll("\\s+", "");
 
-        // added 12/13/2025
-        int targetLine2 = otherFunctions.findSubstringLines(origFileCont, "return")-2;
-        String desLine2 = origFileContList.get(targetLine2).toString();
-        int firstIndex2 = otherFunctions.findNthOccurrence(desLine2, "'",1);
-        int secondIndex2 = otherFunctions.findNthOccurrence(desLine2, "'",2);
-        String origNameAsTyped = desLine2.substring(firstIndex2 + 1, secondIndex2);
-
-        List<String> nameList = new ArrayList<>();
-        nameList.add(origName);
-        nameList.add(origNameAsTyped);
-
-        String origNameWithSpaces = nameList.get(1);
-        String nextString = "The Autopsy of Jane Doe";
-
-        String name = "TheAutopsyOfJaneDoe";
-
-        int targetLine23 = otherFunctions.findSubstringLines(origFileCont, "</Routes>");
-        String[] linesArray2 = origFileCont.split("\r?\n");
-        List<String> origFileContList2 = new ArrayList<>(Arrays.asList(linesArray2));
-        int lineline2 = targetLine - 1;
-        String desLine23 = origFileContList2.get(lineline2).toString();
-        int firstIndex23 = desLine23.indexOf("\"");
-        int secondIndex23 = desLine23.indexOf("\"", firstIndex23 + 1);
-        String origName2 = desLine23.substring(firstIndex23 + 2, secondIndex23);
-        String newContentLine = desLine.replace(origName2, name);
-        origFileContList.add(targetLine23, newContentLine);
-        String newContentRev1 = String.join("\n", origFileContList);
-
-        int targetLine34 = otherFunctions.findSubstringLines(newContentRev1, "return");
-        String[] newContRev1StrList = newContentRev1.split("\r?\n");
-        List<String> newContRev1StrArrList = new ArrayList<>(Arrays.asList(newContRev1StrList));
-        int prevTargetLine = targetLine34 - 2;
-        String desString = newContRev1StrArrList.get(prevTargetLine).toString();
-        String newLinkNumber = Integer.toString(otherFunctions.getIDNumber(desString));
-        String prevLinkNumber = Integer.toString(otherFunctions.getIDNumber(desString) - 1);
-        desString = desString.replaceFirst(prevLinkNumber, newLinkNumber);
-        //String origNameWithSpaces = addSpacesToString(origName);
-        //String newNameWithSpaces = addSpacesToString(name);
-        //desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
-        desString = desString.replaceFirst(origNameWithSpaces, nextString);
-        desString = desString.replaceFirst(origName, name);
-
-        newContRev1StrArrList.add(prevTargetLine + 1, desString);
-        String newContentRev2 = String.join("\n", newContRev1StrArrList);
-
-        System.out.println(newContentRev2);
-
-
+        for(int i=0;i<arrayList.size();i++) {
+            if (words[i].contains("\"/" +movNameWithoutSpaces+'\"')) {
+                arrayList.set(i,"Line to Remove");
+            }
+            if (words[i].contains("'./" +movNameWithoutSpaces+"'")) {
+                arrayList.set(i,"Line to Remove");
+            }
+            if (words[i].contains("to: '/" +movNameWithoutSpaces+"'")) {
+                arrayList.set(i,"Line to Remove");
+            }
+        }
+        arrayList.removeAll(Collections.singleton("Line to Remove"));
+        String joinedString = String.join("\n", arrayList);
+        System.out.println(joinedString);
     }
 }
 

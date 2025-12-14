@@ -289,4 +289,25 @@ public class OtherFunctions {
         String combinedString = String.join(" ", wordsList);
         return combinedString;
     }
+    public static String removeFile(String movieName, String origFileCont){
+
+        String[] words = origFileCont.split("\\R");
+        ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(words));
+        String movNameWithoutSpaces = movieName.replaceAll("\\s+", "");
+
+        for(int i=0;i<arrayList.size();i++) {
+            if (words[i].contains("\"/" +movNameWithoutSpaces+'\"')) {
+                arrayList.set(i,"Line to Remove");
+            }
+            if (words[i].contains("'./" +movNameWithoutSpaces+"'")) {
+                arrayList.set(i,"Line to Remove");
+            }
+            if (words[i].contains("to: '/" +movNameWithoutSpaces+"'")) {
+                arrayList.set(i,"Line to Remove");
+            }
+        }
+        arrayList.removeAll(Collections.singleton("Line to Remove"));
+        String joinedString = String.join("\n", arrayList);
+        return joinedString;
+    }
 }
