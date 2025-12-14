@@ -23,7 +23,7 @@ public class SecondaryController {
         String content = requestDTO.getMovieName();
         String movieReview = requestDTO.getMovieReview();
 
-        String nextString = content.substring(0, content.length()-1);
+        String nextString = content.substring(0, content.length());
         String newString = nextString.replaceAll("\\s", "");
 
         OtherFunctions otherFunctions = new OtherFunctions();
