@@ -10,7 +10,7 @@ public class DeleteController {
     @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/","https://www.aprilshorrorcorner.com","https://aprilshorrorcorner.com"})
     @PostMapping("/deleteEndpoint")
     public String deleteData(@RequestBody String movieName) throws IOException {
-        String nextString = movieName.substring(0, movieName.length());
+        String nextString = movieName.substring(0, movieName.length()-1);
         String newName = nextString.replace("+"," ");
 
         OtherFunctions otherFunctions = new OtherFunctions();
