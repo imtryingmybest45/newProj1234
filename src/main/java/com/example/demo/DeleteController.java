@@ -10,6 +10,9 @@ public class DeleteController {
     @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/","https://www.aprilshorrorcorner.com","https://aprilshorrorcorner.com"})
     @PostMapping("/deleteEndpoint")
     public String deleteData(@RequestBody String movieName) throws IOException {
+        String nextString = movieName.substring(0, movieName.length());
+        String newName = nextString.replace("+"," ");
+
         OtherFunctions otherFunctions = new OtherFunctions();
         String repoName = "frontEndAppCode";
         String gitToken = System.getenv("HEDGEHOG");
@@ -23,7 +26,8 @@ public class DeleteController {
         GHContent stuff = repo.getFileContent(filePath, branch);
         String origFileCont = new String(stuff.read().readAllBytes(), "UTF-8");
 
-        String newFileCont = otherFunctions.removeFile(movieName, origFileCont);
+        String newFileCont = otherFunctions.removeFile(newName, origFileCont);
+
         repo.createContent()
                 .path(filePath)
                 .content(newFileCont.getBytes("UTF-8"))
@@ -32,6 +36,6 @@ public class DeleteController {
                 .branch(branch)
                 .commit();
 
-        return "Successfully deleted "+movieName+". Please wait a few moments for the website to refresh.";
+        return "Successfully deleted "+newName+". Please wait a few moments for the website to refresh.";
     }
 }
