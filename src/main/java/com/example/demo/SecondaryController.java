@@ -20,11 +20,10 @@ public class SecondaryController {
     @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/","https://www.aprilshorrorcorner.com","https://aprilshorrorcorner.com"})
     @PostMapping("/genericEndpoint123")
     public String getData(@RequestBody MyRequestDTO requestDTO) throws IOException {
-
         String content = requestDTO.getMovieName();
         String movieReview = requestDTO.getMovieReview();
 
-        String nextString = content.substring(0, content.length());
+        String nextString = content.substring(0, content.length()-1);
         String newString = nextString.replaceAll("\\s", "");
 
         OtherFunctions otherFunctions = new OtherFunctions();
@@ -35,6 +34,7 @@ public class SecondaryController {
         System.out.println("Git Token: " + gitToken);
 
         otherFunctions.writeNewPagesFile(nextString, name,repoName,gitToken,movieReview);
+        System.out.println("checkpoint0");
         Timer timer = new Timer(); // Create a Timer object
         TimerTask task = new TimerTask() {
             @Override
@@ -42,10 +42,12 @@ public class SecondaryController {
                 String origName = null;
                 String origNameWithSpaces = null;
                 List<String> fruits = new ArrayList<>();
+                System.out.println("chekpoint1");
                 try {
                     fruits = otherFunctions.getOrigName(repoName,gitToken);
                     origName = fruits.get(0);
                     origNameWithSpaces = fruits.get(1);
+                    System.out.println("chekpoint2");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

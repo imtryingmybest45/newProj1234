@@ -189,7 +189,7 @@ public class OtherFunctions {
         String origName = desLine.substring(firstIndex + 2, secondIndex);
 
         // added 12/13/2025
-        int targetLine2 = findSubstringLines(origFileCont, "return")-2;
+        int targetLine2 = findSubstringLines(origFileCont, "const stvar = \"hello\"")-3;
         String desLine2 = origFileContList.get(targetLine2).toString();
         int firstIndex2 = findNthOccurrence(desLine2, "'",1);
         int secondIndex2 = findNthOccurrence(desLine2, "'",2);

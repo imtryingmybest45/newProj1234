@@ -3,135 +3,106 @@ package com.example.demo;
 import org.kohsuke.github.*;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 public class Sandbox {
 
     public static void main(String[] args) throws Exception {
-        String movieName = "The Autopsy of Jane Doe";
-        String filePath = "C:\\Windows\\System32\\testFrontEndCode\\src\\pages\\Home.js";
-        OtherFunctions otherFunctions = new OtherFunctions();
-        String origFileCont = otherFunctions.readJsFile(filePath);
-        String[] words = origFileCont.split("\\R");
-        ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(words));
-        String movNameWithoutSpaces = movieName.replaceAll("\\s+", "");
+        String content = "New Movie Name";
+        String movieReview = "moviewReview";
 
-        for(int i=0;i<arrayList.size();i++) {
-            if (words[i].contains("\"/" +movNameWithoutSpaces+'\"')) {
-                arrayList.set(i,"Line to Remove");
+        String nextString = content.substring(0, content.length());
+        String newString = nextString.replaceAll("\\s", "");
+
+        OtherFunctions otherFunctions = new OtherFunctions();
+        String name = newString;
+        String repoName = "frontEndAppCode";
+        String gitToken = System.getenv("HEDGEHOG");
+        System.out.println("Git Token: " + gitToken);
+
+        //otherFunctions.writeNewPagesFile(nextString, name,repoName,gitToken,movieReview);
+        System.out.println("checkpoint0");
+        Timer timer = new Timer(); // Create a Timer object
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                String origName = null;
+                String origNameWithSpaces = null;
+                List<String> fruits = new ArrayList<>();
+                System.out.println("chekpoint1");
+                try {
+                    fruits = otherFunctions.getOrigName(repoName,gitToken);
+                    origName = fruits.get(0);
+                    origNameWithSpaces = fruits.get(1);
+                    System.out.println("chekpoint2");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                String newContent = null;
+                try {
+                    newContent = otherFunctions.editRoutesAppFile(name,repoName,gitToken);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                String newContent2 = null;
+                try {
+                    newContent2 = otherFunctions.editLinksAppFile(name, origName, origNameWithSpaces, newContent, nextString);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                String newContent3 = null;
+                try {
+                    newContent3 = otherFunctions.addImportLine(name, newContent2);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                //String githubToken = gitToken; // Replace with your token
+                String owner = "imtryingmybest45";
+                String filePath = "src/pages/Home.js";
+                String branch = "main"; // Or your target branch
+
+                GitHub github2 = null;
+                try {
+                    github2 = new GitHubBuilder().withOAuthToken(gitToken).build();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                GHRepository repo2 = null;
+                try {
+                    repo2 = github2.getUser(owner).getRepository(repoName);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                GHContent stuff = null;
+                try {
+                    stuff = repo2.getFileContent(filePath, branch);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    String currentContent = new String(stuff.read().readAllBytes(), "UTF-8");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                try {
+                    repo2.createContent()
+                            .path(filePath)
+                            .content(newContent3.getBytes("UTF-8"))
+                            .message("Updated file via Java API")
+                            .sha(stuff.getSha()) // Important for optimistic locking
+                            .branch(branch)
+                            .commit();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+
             }
-            if (words[i].contains("'./" +movNameWithoutSpaces+"'")) {
-                arrayList.set(i,"Line to Remove");
-            }
-            if (words[i].contains("to: '/" +movNameWithoutSpaces+"'")) {
-                arrayList.set(i,"Line to Remove");
-            }
-        }
-        arrayList.removeAll(Collections.singleton("Line to Remove"));
-        String joinedString = String.join("\n", arrayList);
-        System.out.println(joinedString);
+        };
+        timer.schedule(task,6000);
     }
 }
-
-
-
-
-/*package com.example.demo;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Base64;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-
-public class Sandbox {
-
-    private static final String GITHUB_API_BASE_URL = "https://github.com/";
-    private static final String GITHUB_TOKEN = "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"; // Replace with your token
-
-    public static void updateFileInRepo(String owner, String repo, String filePath, String newContent, String commitMessage) throws IOException, InterruptedException {
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        // 1. Get current file content and SHA
-        HttpRequest getRequest = HttpRequest.newBuilder()
-                .uri(URI.create(GITHUB_API_BASE_URL + owner + "/" + repo + "/blob/main/" + filePath))
-                .header("Authorization", "token " + GITHUB_TOKEN)
-                .build();
-        System.out.println(getRequest.uri());
-        HttpResponse<String> getResponse = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
-
-        String jsonBody = getResponse.body();
-        Document doc = Jsoup.parse(jsonBody);
-        Elements scriptElement = doc.select("script[type='application/json']");
-        String newStr = scriptElement.last().toString().replaceAll("script", "pre");
-        Document doc2 = Jsoup.parse(newStr);
-        String jsonString = doc2.text();
-        //System.out.println(jsonString);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(jsonString);
-
-        //System.out.println(rootNode.fieldNames());
-
-        if (rootNode.get("payload").get("blob").has("rawLines")) {
-            System.out.println("Name: " + rootNode.get("payload").get("blob").get("rawLines"));
-            //System.out.println("hello");
-        }
-
-        String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
-        System.out.println("Pretty-printed JSON structure:\n" + prettyJson);
-
-        /*String currentContentBase64 = extractContentFromGithubResponse(jsonBody); // Implement this extraction
-        String currentSha = extractShaFromGithubResponse(jsonBody); // Implement this extraction
-
-        // 2. Encode new content
-        String newContentBase64 = Base64.getEncoder().encodeToString(newContent.getBytes());
-
-        // 3. Create update request
-        String requestBody = String.format(
-                "{\"message\": \"%s\", \"content\": \"%s\", \"sha\": \"%s\"}",
-                commitMessage, newContentBase64, currentSha
-        );
-
-        HttpRequest putRequest = HttpRequest.newBuilder()
-                .uri(URI.create(GITHUB_API_BASE_URL + "/repos/" + owner + "/" + repo + "/contents/" + filePath))
-                .header("Authorization", "token " + GITHUB_TOKEN)
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
-
-        HttpResponse<String> putResponse = client.send(putRequest, HttpResponse.BodyHandlers.ofString());
-        //System.out.println("Update response: " + putResponse.body());
-    }
-
-    // Placeholder methods for extracting content and SHA from GitHub API response
-    private static String extractContentFromGithubResponse(String json) {
-        // Implement JSON parsing to get the 'content' field
-        return "base64encodedoldcontent"; // Replace with actual extraction
-    }
-
-    private static String extractShaFromGithubResponse(String json) {
-        // Implement JSON parsing to get the 'sha' field
-        return "oldsha"; // Replace with actual extraction
-    }
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        // Example usage:
-        updateFileInRepo("imtryingmybest45", "backEndAppCode", "demo/src/main/java/com/example/demo/DemoApplication.java", "New content of the file.", "Updated file via Java API");
-    }
-}*/
