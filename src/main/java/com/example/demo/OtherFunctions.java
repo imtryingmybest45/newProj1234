@@ -129,10 +129,12 @@ public class OtherFunctions {
         String capitalizedString = firstLetter + remainingLetters;
         String fileContent = modifyJsContent(s, capitalizedString);
 
-        String replacementSubstring = "<br /> \n <br />";
+        //String replacementSubstring = "<br /> \n <br />";
+        String replacementSubstring = "<br /> \n";
 
         // Replace all blank lines with the specified substring
-        String modifiedString = movieReview.replaceAll("(?m)^\\s*\\r?\\n", replacementSubstring + "\n");
+        //String modifiedString = movieReview.replaceAll("(?m)^\\s*\\r?\\n", replacementSubstring + "\n");
+        String modifiedString = movieReview.replaceAll("\\R",replacementSubstring);
 
         String fileContent2 = fileContent.replace("Insert shit here",modifiedString);
         String fileContent3 = fileContent2.replace("Insert movie name here",movieName);
