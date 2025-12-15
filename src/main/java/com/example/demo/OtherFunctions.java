@@ -243,8 +243,14 @@ public class OtherFunctions {
         //String origNameWithSpaces = addSpacesToString(origName);
         //String newNameWithSpaces = addSpacesToString(name);
         //desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
-        desString = desString.replaceFirst(origNameWithSpaces, nextString);
-        desString = desString.replaceFirst(origName, name);
+        if (name.contains(origName)) {
+            desString = desString.replaceFirst(origNameWithSpaces, nextString);
+            desString = replaceSecond(desString,origName,name);
+        }
+        else{
+            desString = desString.replaceFirst(origNameWithSpaces, nextString);
+            desString = desString.replaceFirst(origName, name);
+        }
 
         newContRev1StrArrList.add(prevTargetLine + 1, desString);
         String newContentRev2 = String.join("\n", newContRev1StrArrList);
@@ -311,5 +317,32 @@ public class OtherFunctions {
         arrayList.removeAll(Collections.singleton("Line to Remove"));
         String joinedString = String.join("\n", arrayList);
         return joinedString;
+    }
+
+    public static String replaceSecond(String originalString, String targetSubstring, String replacement) {
+        // Find the index of the first occurrence
+        int firstIndex = originalString.indexOf(targetSubstring);
+
+        if (firstIndex == -1) {
+            // Target substring not found at all, return original
+            return originalString;
+        }
+
+        // Find the index of the second occurrence, starting the search after the first one
+        int secondIndex = originalString.indexOf(targetSubstring, firstIndex + targetSubstring.length());
+
+        if (secondIndex == -1) {
+            // Second occurrence not found, return original
+            return originalString;
+        }
+
+        // Build the new string using substring concatenation
+        // 1. Substring from the beginning to the start of the second occurrence
+        String partBefore = originalString.substring(0, secondIndex);
+        // 2. Substring from the end of the second occurrence to the end of the string
+        String partAfter = originalString.substring(secondIndex + targetSubstring.length());
+
+        // Concatenate the parts with the replacement in the middle
+        return partBefore + replacement + partAfter;
     }
 }
