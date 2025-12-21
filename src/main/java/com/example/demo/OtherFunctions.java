@@ -3,47 +3,10 @@ import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.nio.file.Files;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.nio.file.StandardOpenOption;
 
 public class OtherFunctions {
-    public static List<String> findDifferentFiles() {
-        String folderpath = "C:\\Mac\\Home\\Documents\\SampleFolder";
-        File directory = new File(folderpath);
-        File[] files = directory.listFiles();
-        List<String> filenamesWithoutExtensions = new ArrayList<>();
-
-        String frontendpath = "C:\\Windows\\System32\\my-app12\\src\\pages";
-        File frontdirectory = new File(frontendpath);
-        File[] filesfrontend = frontdirectory.listFiles();
-        List<String> frontendnamesWithoutExtensions = new ArrayList<>();
-
-        for (File file : files) {
-            String name = file.getName();
-            int lastIndexOf = name.lastIndexOf(".");
-            filenamesWithoutExtensions.add(name.substring(0, lastIndexOf));
-        }
-
-        for (File file : filesfrontend) {
-            String name = file.getName();
-            int lastIndexOf = name.lastIndexOf(".");
-            frontendnamesWithoutExtensions.add(name.substring(0, lastIndexOf));
-        }
-
-        Collections.sort(frontendnamesWithoutExtensions);
-        Collections.sort(filenamesWithoutExtensions);
-        List<String> difference = new ArrayList<>(filenamesWithoutExtensions);
-        difference.removeAll(frontendnamesWithoutExtensions);
-        return difference;
-    }
 
     public static int getIDNumber(String s) {
         ArrayList<Integer> list = new ArrayList<>();
@@ -66,36 +29,8 @@ public class OtherFunctions {
         return idNumber;
     }
 
-    public static void npmStart() {
-        File targetDirectory = new File("C:\\Windows\\System32\\my-app12"); // Replace with your desired path
-        ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", "start", "npm", "start"); // Example command: list directory contents
-        processBuilder.directory(targetDirectory);
-        try {
-            // Start the process
-            Process process = processBuilder.start();
-            int exitCode = process.waitFor();
-            System.out.println("Process exited with code: " + exitCode);
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String readJsFile(String filePath) throws IOException {
-        StringBuilder content = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line).append(System.lineSeparator());
-            }
-        }
-        return content.toString();
-    }
-
-    public static String modifyJsContent(String originalContent, String diffFile) {
-        // Example: Replace a specific function name
-        String modifiedContent = originalContent.replace("NewFunc", diffFile);
-        return modifiedContent;
+    public static String modifyJsContent(String originalContent, String movieNameWithoutSpaces) {
+        return originalContent.replace("NewFunc", movieNameWithoutSpaces);
     }
 
     public static int findSubstringLines(String mainString, String substring) {
@@ -110,43 +45,33 @@ public class OtherFunctions {
         return theLineNum;
     }
 
-    public static void writeNewPagesFile(String movieName, String name, String repoName, String gitToken, String movieReview) throws IOException {
-        String githubToken = gitToken;
-        String owner = "imtryingmybest45";
-        //String repoName = "frontEndCode";
-        String filePath = "src/NewFunc.js";
-        String branch = "main"; // Or your target branch
+    public static void writeNewPagesFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String movieReview) throws IOException {
 
-        GitHub github = new GitHubBuilder().withOAuthToken(githubToken).build();
-        GHRepository repo = github.getUser(owner).getRepository(repoName);
+        Constants constants = new Constants();
 
-        GHContent stuff = repo.getFileContent(filePath, branch);
-        String s = new String(stuff.read().readAllBytes(), "UTF-8");
+        String gitToken = System.getenv("HEDGEHOG");
+        String repoOwner = constants.repoOwner;
+        String repoName = constants.repoName;
+        String branch = constants.branch; // Or your target branch
+        String funcTemplateFilePath = "src/NewFunc.js";
 
-        //String s = readJsFile("C:\\Windows\\System32\\my-app12\\src\\NewFunc.js");
-        String firstLetter = name.substring(0, 1).toUpperCase();
-        String remainingLetters = name.substring(1);
-        String capitalizedString = firstLetter + remainingLetters;
-        String fileContent = modifyJsContent(s, capitalizedString);
+        GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
+        GHRepository repo = github.getUser(repoOwner).getRepository(repoName);
 
-        //String replacementSubstring = "<br /> \n <br />";
-        String replacementSubstring = "<br /> \n";
+        GHContent funcTemplateFileContent = repo.getFileContent(funcTemplateFilePath, branch);
+        String funcFileContent = new String(funcTemplateFileContent.read().readAllBytes(), "UTF-8");
 
-        // Replace all blank lines with the specified substring
-        //String modifiedString = movieReview.replaceAll("(?m)^\\s*\\r?\\n", replacementSubstring + "\n");
-        String modifiedString = movieReview.replaceAll("\\R",replacementSubstring);
+        String fileContent = modifyJsContent(funcFileContent, movieNameWithoutSpaces);
 
-        String fileContent2 = fileContent.replace("Insert shit here",modifiedString);
-        String fileContent3 = fileContent2.replace("Insert movie name here",movieName);
+        movieReview = movieReview.replace("\n", "\\n");
+        movieReview = movieReview.replace("\"","\\\"");
 
-        String filePath2 = "src/pages/"+name+".js";
-        String commitMessage = "Add hellYeah";
+        fileContent = fileContent.replace("Insert movie name here",movieNameWithSpaces);
+        fileContent = fileContent.replace("Insert movie review here",movieReview); //originally said modified string
 
-        repo.createContent(fileContent3, commitMessage, filePath2);
-        System.out.println("File '" + filePath + "' added successfully.");
-
-        //Path filePath = Paths.get(fileName);
-        //Files.writeString(filePath, ss, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        String newFilePath = "src/pages/"+movieNameWithoutSpaces+".js";
+        String commitMessage = "Added "+newFilePath;
+        repo.createContent(fileContent, commitMessage, newFilePath);
     }
 
     public static int findNthOccurrence(String text, String subString, int n) {
@@ -166,110 +91,135 @@ public class OtherFunctions {
         }
         return index;
     }
-    public static List<String> getOrigName(String repoName, String gitToken) throws IOException {
 
-        String githubToken = gitToken;
-        String owner = "imtryingmybest45";
-        //String repoName = "frontEndCode";
-        String filePath = "src/pages/Home.js";
-        String branch = "main"; // Or your target branch
+    public static List<String> getOrigName() throws IOException {
 
-        GitHub github = new GitHubBuilder().withOAuthToken(githubToken).build();
-        GHRepository repo = github.getUser(owner).getRepository(repoName);
+        Constants constants = new Constants();
 
-        GHContent stuff = repo.getFileContent(filePath, branch);
-        String origFileCont = new String(stuff.read().readAllBytes(), "UTF-8");
+        String gitToken = System.getenv("HEDGEHOG");
+        String repoOwner = constants.repoOwner;
+        String repoName = constants.repoName;
+        String branch = constants.branch; // Or your target branch
+        String homeFilePath = "src/pages/Home.js";
 
-        //String origFileCont = readJsFile(ppathNName);
-        int targetLine = findSubstringLines(origFileCont, "</Routes>");
-        String[] linesArray = origFileCont.split("\r?\n");
-        List<String> origFileContList = new ArrayList<>(Arrays.asList(linesArray));
-        int lineline = targetLine - 1;
-        String desLine = origFileContList.get(lineline).toString();
+        GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
+        GHRepository repo = github.getUser(repoOwner).getRepository(repoName);
+
+        GHContent stuff = repo.getFileContent(homeFilePath, branch);
+        String homeOrigFileCont = new String(stuff.read().readAllBytes(), "UTF-8");
+
+        int targetLine = findSubstringLines(homeOrigFileCont, "</Routes>");
+        String[] linesArray = homeOrigFileCont.split("\r?\n");
+        List<String> homeOrigFileContList = new ArrayList<>(Arrays.asList(linesArray));
+        String desLine = homeOrigFileContList.get(targetLine - 1).toString();
         int firstIndex = desLine.indexOf("\"");
         int secondIndex = desLine.indexOf("\"", firstIndex + 1);
         String origName = desLine.substring(firstIndex + 2, secondIndex);
 
-        // added 12/13/2025
-        int targetLine2 = findSubstringLines(origFileCont, "const stvar = \"hello\"")-3;
-        String desLine2 = origFileContList.get(targetLine2).toString();
+        int targetLine2 = findSubstringLines(homeOrigFileCont, "//const stvar = \"hello\";")-3;
+        String desLine2 = homeOrigFileContList.get(targetLine2).toString();
         int firstIndex2 = findNthOccurrence(desLine2, "'",1);
         int secondIndex2 = findNthOccurrence(desLine2, "'",2);
         String origNameAsTyped = desLine2.substring(firstIndex2 + 1, secondIndex2);
 
-        List<String> nameList = new ArrayList<>();
-        nameList.add(origName);
-        nameList.add(origNameAsTyped);
+        List<String> origNameList = new ArrayList<>();
+        origNameList.add(origName);
+        origNameList.add(origNameAsTyped);
 
-        return nameList;
+        return origNameList;
     }
-    public static String editRoutesAppFile(String name, String repoName, String gitToken) throws IOException {
-        //String origFileCont = readJsFile(ppathNName);
-        String githubToken = gitToken;
-        String owner = "imtryingmybest45";
-        //String repoName = "frontEndCode";
-        String filePath = "src/pages/Home.js";
-        String branch = "main"; // Or your target branch
+    public static String editRoutesAppFile(String movieNameWithoutSpaces, String origEditedNameWithoutSpaces) throws IOException {
 
-        GitHub github = new GitHubBuilder().withOAuthToken(githubToken).build();
-        GHRepository repo = github.getUser(owner).getRepository(repoName);
+        Constants constants = new Constants();
 
-        GHContent stuff = repo.getFileContent(filePath, branch);
-        String origFileCont = new String(stuff.read().readAllBytes(), "UTF-8");
+        String gitToken = System.getenv("HEDGEHOG");
+        String repoOwner = constants.repoOwner;
+        String repoName = constants.repoName;
+        String branch = constants.branch; // Or your target branch
+        String homeFilePath = "src/pages/Home.js";
 
-        int targetLine = findSubstringLines(origFileCont, "</Routes>");
-        String[] linesArray = origFileCont.split("\r?\n");
-        List<String> origFileContList = new ArrayList<>(Arrays.asList(linesArray));
-        int lineline = targetLine - 1;
-        String desLine = origFileContList.get(lineline).toString();
-        int firstIndex = desLine.indexOf("\"");
-        int secondIndex = desLine.indexOf("\"", firstIndex + 1);
-        String origName = desLine.substring(firstIndex + 2, secondIndex);
-        String newContentLine = desLine.replace(origName, name);
-        origFileContList.add(targetLine, newContentLine);
-        String newContent = String.join("\n", origFileContList);
-        return newContent;
-    }
+        GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
+        GHRepository repo = github.getUser(repoOwner).getRepository(repoName);
 
-    public static String editLinksAppFile(String name, String origName, String origNameWithSpaces, String newContentRev1, String nextString) throws IOException {
-        //int targetLine = findSubstringLines(newContentRev1, "return");
-        int targetLine = findSubstringLines(newContentRev1, "const stvar = \"hello\"");
-        String[] newContRev1StrList = newContentRev1.split("\r?\n");
-        List<String> newContRev1StrArrList = new ArrayList<>(Arrays.asList(newContRev1StrList));
-        int prevTargetLine = targetLine - 3;
-        //int prevTargetLine = targetLine - 2;
-        String desString = newContRev1StrArrList.get(prevTargetLine).toString();
-        String newLinkNumber = Integer.toString(getIDNumber(desString));
-        String prevLinkNumber = Integer.toString(getIDNumber(desString) - 1);
-        desString = desString.replaceFirst(prevLinkNumber, newLinkNumber);
-        //String origNameWithSpaces = addSpacesToString(origName);
-        //String newNameWithSpaces = addSpacesToString(name);
-        //desString = desString.replaceFirst(origNameWithSpaces, newNameWithSpaces);
-        if (name.contains(origName)) {
-            desString = desString.replaceFirst(origNameWithSpaces, nextString);
-            desString = replaceSecond(desString,origName,name);
+        GHContent stuff = repo.getFileContent(homeFilePath, branch);
+        String origHomeFileCont = new String(stuff.read().readAllBytes(), "UTF-8");
+
+        String[] linesArray = origHomeFileCont.split("\r?\n");
+        List<String> origHomeFileContList = new ArrayList<>(Arrays.asList(linesArray));
+
+        if(origEditedNameWithoutSpaces.equals(movieNameWithoutSpaces)) {
+
+            int targetLine = findSubstringLines(origHomeFileCont, "</Routes>");
+            String desLine = origHomeFileContList.get(targetLine - 1).toString();
+            int firstIndex = desLine.indexOf("\"");
+            int secondIndex = desLine.indexOf("\"", firstIndex + 1);
+            String origName = desLine.substring(firstIndex + 2, secondIndex);
+            String newContentLine = desLine.replace(origName, movieNameWithoutSpaces);
+            origHomeFileContList.add(targetLine, newContentLine);
         }
         else{
-            desString = desString.replaceFirst(origNameWithSpaces, nextString);
-            desString = desString.replaceFirst(origName, name);
+            int targetLine = findSubstringLines(origHomeFileCont, "<Route path=\"/"+origEditedNameWithoutSpaces+"\"");
+            String desLine = origHomeFileContList.get(targetLine).toString();
+            desLine = desLine.replace(origEditedNameWithoutSpaces,movieNameWithoutSpaces);
+            origHomeFileContList.set(targetLine, desLine);
         }
 
-        newContRev1StrArrList.add(prevTargetLine + 1, desString);
-        String newContentRev2 = String.join("\n", newContRev1StrArrList);
+        String newHomeContent = String.join("\n", origHomeFileContList);
+        return newHomeContent;
+    }
+
+    public static String editLinksAppFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String origNameWithSpaces, String origNameWithoutSpaces, String newHomeContent) throws IOException {
+
+        String[] newHomeContentList = newHomeContent.split("\r?\n");
+        List<String> newHomeContentArrList = new ArrayList<>(Arrays.asList(newHomeContentList));
+
+        if(origEditedNameWithoutSpaces.equals(movieNameWithoutSpaces)) {
+
+            int targetLine = findSubstringLines(newHomeContent, "//const stvar = \"hello\";");
+            String desLine = newHomeContentArrList.get(targetLine-3).toString();
+            String newLinkNumber = Integer.toString(getIDNumber(desLine));
+            String prevLinkNumber = Integer.toString(getIDNumber(desLine) - 1);
+            desLine = desLine.replaceFirst(prevLinkNumber, newLinkNumber);
+
+            if (movieNameWithoutSpaces.contains(origNameWithoutSpaces) && movieNameWithoutSpaces.length()<origNameWithoutSpaces.length()) {
+                desLine = desLine.replaceFirst(origNameWithSpaces, movieNameWithSpaces);
+                desLine = replaceSecond(desLine, origNameWithoutSpaces, movieNameWithoutSpaces);
+            } else {
+                desLine = desLine.replaceFirst(origNameWithSpaces, movieNameWithSpaces);
+                desLine = desLine.replaceFirst(origNameWithoutSpaces, movieNameWithoutSpaces);
+            }
+
+            newHomeContentArrList.add(targetLine-2, desLine);
+        }
+        else{
+            int targetLine = findSubstringLines(newHomeContent, "text: '"+origEditedNameWithSpaces+"'");
+            String desLine = newHomeContentArrList.get(targetLine).toString();
+            if (movieNameWithoutSpaces.contains(origEditedNameWithoutSpaces) && movieNameWithoutSpaces.length()<origEditedNameWithoutSpaces.length()) {
+                desLine = desLine.replaceFirst(origEditedNameWithSpaces, movieNameWithSpaces);
+                desLine = replaceSecond(desLine, origEditedNameWithoutSpaces, movieNameWithoutSpaces);
+            } else {
+                desLine = desLine.replaceFirst(origEditedNameWithSpaces, movieNameWithSpaces);
+                desLine = desLine.replaceFirst(origEditedNameWithoutSpaces, movieNameWithoutSpaces);
+            }
+            newHomeContentArrList.set(targetLine, desLine);
+        }
+        String newContentRev2 = String.join("\n", newHomeContentArrList);
         return newContentRev2;
     }
-    public static String addImportLine(String name, String newContentRev2) throws IOException {
-        String desLine = "import " + name + " from " + "'./" + name + "';";
-        String[] newContentRev3Str = newContentRev2.split("\r?\n");
-        List<String> newContentRev3List= new ArrayList<>(Arrays.asList(newContentRev3Str));
-        newContentRev3List.add(0, desLine);
-        String newContentRev3 = String.join("\n", newContentRev3List);
+    public static String addImportLine(String movieNameWithoutSpaces, String origEditedNameWithoutSpaces, String newHomeContent, boolean submitFlag) throws IOException {
+        String desLine = "import " + movieNameWithoutSpaces + " from " + "'./" + movieNameWithoutSpaces + "';";
+        String[] newHomeContentList = newHomeContent.split("\r?\n");
+        List<String> newHomeContentArrList= new ArrayList<>(Arrays.asList(newHomeContentList));
+        if(!submitFlag) {
+            int targetLine = findSubstringLines(newHomeContent, "import " + origEditedNameWithoutSpaces + " from " + "'./" + origEditedNameWithoutSpaces + "';");
+            String newDesLine = "import " + movieNameWithoutSpaces + " from " + "'./" + movieNameWithoutSpaces + "';";
+            newHomeContentArrList.set(targetLine, newDesLine);
+        }
+        else{
+            newHomeContentArrList.add(0, desLine);
+        }
+        String newContentRev3 = String.join("\n", newHomeContentArrList);
         return newContentRev3;
-    }
-    public static void killCmdLine() throws IOException {
-        Runtime rt = Runtime.getRuntime();
-        String command = "taskkill /F /IM WindowsTerminal.exe";
-        rt.exec(command);
     }
 
     public static String addSpacesToString(String s){

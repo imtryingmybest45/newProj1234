@@ -9,53 +9,61 @@ import java.util.TimerTask;
 
 @RestController
 public class DeleteController {
-    @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000","https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/","https://www.aprilshorrorcorner.com","https://aprilshorrorcorner.com"})
+    @CrossOrigin(origins = {"http://localhost:3000",
+            "https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/",
+            "https://www.aprilshorrorcorner.com",
+            "https://aprilshorrorcorner.com"})
+
     @PostMapping("/deleteEndpoint")
+
     public String deleteData(@RequestBody String movieName) throws IOException {
-        String nextString = movieName.substring(0, movieName.length() - 1);
-        String newName = nextString.replace("+", " ");
-        String newNameWithoutSpaces = newName.replace(" ", "");
 
         OtherFunctions otherFunctions = new OtherFunctions();
-        String repoName = "frontEndAppCode";
-        String gitToken = System.getenv("HEDGEHOG");
-        String owner = "imtryingmybest45";
+        Constants constants = new Constants();
+
+        movieName = movieName.substring(0, movieName.length() - 1);
+        String movieNameWithSpaces = movieName.replace("+", " ");
+        String movieNameWithoutSpaces = movieNameWithSpaces.replace(" ", "");
+
+        String repoOwner = constants.repoOwner;
+        String repoName = constants.repoName;
+        String gitToken = constants.gitToken;
+        String branch = constants.branch;
         String filePath = "src/pages/Home.js";
-        String branch = "main"; // Or your target branch
 
         GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
-        GHRepository repo = github.getUser(owner).getRepository(repoName);
+        GHRepository repo = github.getUser(repoOwner).getRepository(repoName);
 
         GHContent stuff = repo.getFileContent(filePath, branch);
         String origFileCont = new String(stuff.read().readAllBytes(), "UTF-8");
 
-        String newFileCont = otherFunctions.removeFile(newName, origFileCont);
+        String newFileCont = otherFunctions.removeFile(movieNameWithSpaces, origFileCont);
 
         repo.createContent()
                 .path(filePath)
                 .content(newFileCont.getBytes("UTF-8"))
-                .message("Deleted file via Java API")
+                .message("Updated file via Java API")
                 .sha(stuff.getSha()) // Important for optimistic locking
                 .branch(branch)
                 .commit();
 
-        String filePath2 = "src/pages/" + newNameWithoutSpaces + ".js";
+        String filePath2 = "src/pages/" + movieNameWithoutSpaces + ".js";
         Timer timer = new Timer(); // Create a Timer object
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 try {
-                    GitHub github2 = new GitHubBuilder().withOAuthToken(gitToken).build();
-                    GHRepository repo2 = github2.getUser(owner).getRepository(repoName);
-                    GHContent hello = repo2.getFileContent(filePath2, branch);
-                    hello.delete("wow how are you");
+                    GitHub githubDelete = new GitHubBuilder().withOAuthToken(gitToken).build();
+                    GHRepository repoDelete = githubDelete.getUser(repoOwner).getRepository(repoName);
+                    GHContent deletedFile = repoDelete.getFileContent(filePath2, branch);
+                    deletedFile.delete("Deleted file via Java API");
                 } catch (IOException e) {
                     System.err.println("An error occurred: " + e.getMessage());
                     throw new RuntimeException(e);
                 }
             }
         };
-        timer.schedule(task,150000);
-        return "Successfully deleted "+newName+". Please wait a few moments for the website to refresh.";
+        timer.schedule(task,constants.timeDelay);
+        return "Successfully deleted "+movieNameWithSpaces+". Please wait a few moments for the website to refresh.";
     }
 }
