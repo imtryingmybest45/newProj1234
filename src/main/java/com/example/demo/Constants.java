@@ -6,4 +6,5 @@ public class Constants{
     public static final String repoName = "frontEndAppCode";
     public static final String branch = "main";
     public static final int timeDelay = 120000;
+    //public static final int timeDelay = 15000;
 }

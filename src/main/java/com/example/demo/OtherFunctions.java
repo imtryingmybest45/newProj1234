@@ -181,7 +181,7 @@ public class OtherFunctions {
             String prevLinkNumber = Integer.toString(getIDNumber(desLine) - 1);
             desLine = desLine.replaceFirst(prevLinkNumber, newLinkNumber);
 
-            if (movieNameWithoutSpaces.contains(origNameWithoutSpaces) && movieNameWithoutSpaces.length()<origNameWithoutSpaces.length()) {
+            if (movieNameWithoutSpaces.contains(origNameWithoutSpaces)) {
                 desLine = desLine.replaceFirst(origNameWithSpaces, movieNameWithSpaces);
                 desLine = replaceSecond(desLine, origNameWithoutSpaces, movieNameWithoutSpaces);
             } else {
@@ -194,7 +194,7 @@ public class OtherFunctions {
         else{
             int targetLine = findSubstringLines(newHomeContent, "text: '"+origEditedNameWithSpaces+"'");
             String desLine = newHomeContentArrList.get(targetLine).toString();
-            if (movieNameWithoutSpaces.contains(origEditedNameWithoutSpaces) && movieNameWithoutSpaces.length()<origEditedNameWithoutSpaces.length()) {
+            if (movieNameWithoutSpaces.contains(origEditedNameWithoutSpaces)) {
                 desLine = desLine.replaceFirst(origEditedNameWithSpaces, movieNameWithSpaces);
                 desLine = replaceSecond(desLine, origEditedNameWithoutSpaces, movieNameWithoutSpaces);
             } else {
