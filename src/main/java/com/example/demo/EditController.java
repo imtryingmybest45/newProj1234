@@ -115,7 +115,7 @@ public class EditController {
             }
         };
 
-        timerDelete.schedule(deleteTask,500);
+        timerDelete.schedule(deleteTask,constants.timeDelay);
         timerCreate.schedule(createTask, constants.timeDelay);
 
         if (!origEditedNameWithoutSpaces.equals(movieNameWithoutSpaces)){
