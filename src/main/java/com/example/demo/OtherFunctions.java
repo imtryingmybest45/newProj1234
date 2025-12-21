@@ -181,28 +181,18 @@ public class OtherFunctions {
             String prevLinkNumber = Integer.toString(getIDNumber(desLine) - 1);
             desLine = desLine.replaceFirst(prevLinkNumber, newLinkNumber);
 
-            if (movieNameWithoutSpaces.contains(origNameWithoutSpaces)) {
-                desLine = desLine.replaceFirst(origNameWithSpaces, movieNameWithSpaces);
-                desLine = replaceSecond(desLine, origNameWithoutSpaces, movieNameWithoutSpaces);
-            } else {
-                desLine = desLine.replaceFirst(origNameWithSpaces, movieNameWithSpaces);
-                desLine = desLine.replaceFirst(origNameWithoutSpaces, movieNameWithoutSpaces);
-            }
-
+            desLine = desLine.replaceFirst("'"+origNameWithSpaces+"'", "'"+movieNameWithSpaces+"'");
+            desLine = desLine.replaceFirst("'/"+origNameWithoutSpaces+"'", "'/"+movieNameWithoutSpaces+"'");
             newHomeContentArrList.add(targetLine-2, desLine);
         }
         else{
             int targetLine = findSubstringLines(newHomeContent, "text: '"+origEditedNameWithSpaces+"'");
             String desLine = newHomeContentArrList.get(targetLine).toString();
-            if (movieNameWithoutSpaces.contains(origEditedNameWithoutSpaces)) {
-                desLine = desLine.replaceFirst(origEditedNameWithSpaces, movieNameWithSpaces);
-                desLine = replaceSecond(desLine, origEditedNameWithoutSpaces, movieNameWithoutSpaces);
-            } else {
-                desLine = desLine.replaceFirst(origEditedNameWithSpaces, movieNameWithSpaces);
-                desLine = desLine.replaceFirst(origEditedNameWithoutSpaces, movieNameWithoutSpaces);
-            }
+            desLine = desLine.replaceFirst("'"+origEditedNameWithSpaces+"'", "'"+movieNameWithSpaces+"'");
+            desLine = desLine.replaceFirst("'/"+origEditedNameWithoutSpaces+"'", "'/"+movieNameWithoutSpaces+"'");
             newHomeContentArrList.set(targetLine, desLine);
         }
+
         String newContentRev2 = String.join("\n", newHomeContentArrList);
         return newContentRev2;
     }
