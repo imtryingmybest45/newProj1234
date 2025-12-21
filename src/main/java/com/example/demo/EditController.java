@@ -115,11 +115,11 @@ public class EditController {
             }
         };
 
-        timerDelete.schedule(deleteTask,constants.timeDelay);
+        timerDelete.schedule(deleteTask,500);
         timerCreate.schedule(createTask, constants.timeDelay);
 
         if (!origEditedNameWithoutSpaces.equals(movieNameWithoutSpaces)){
-            timerEdit.schedule(editHomeTask, constants.timeDelay);
+            timerEdit.schedule(editHomeTask, 2*constants.timeDelay);
         }
 
         return "You have edited your review. Please wait a few minutes for the website to refresh.";
