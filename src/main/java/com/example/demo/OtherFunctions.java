@@ -340,7 +340,11 @@ public class OtherFunctions {
 
         // Access the fields using standard Java getters
         System.out.println("Poster: " + moviePoster.getPoster());
-
-        return moviePoster.getPoster();
+        if (poster.equals("error")) {
+            return "error";
+        }
+        else {
+            return moviePoster.getPoster();
+        }
     }
 }
