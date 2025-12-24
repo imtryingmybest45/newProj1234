@@ -186,7 +186,8 @@ public class OtherFunctions {
         if(origEditedNameWithoutSpaces.equals(movieNameWithoutSpaces)) {
 
             int targetLine = findSubstringLines(newHomeContent, "//const stvar = \"hello\";");
-            String desLine = newHomeContentArrList.get(targetLine-3).toString();
+            //String desLine = newHomeContentArrList.get(targetLine-3).toString();
+            String desLine = newHomeContentArrList.get(targetLine-7).toString();
             String newLinkNumber = Integer.toString(getIDNumber(desLine));
             String prevLinkNumber = Integer.toString(getIDNumber(desLine) - 1);
             desLine = desLine.replaceFirst(prevLinkNumber, newLinkNumber);
