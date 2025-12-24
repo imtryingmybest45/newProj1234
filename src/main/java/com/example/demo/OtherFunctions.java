@@ -126,7 +126,7 @@ public class OtherFunctions {
         int secondIndex = desLine.indexOf("\"", firstIndex + 1);
         String origName = desLine.substring(firstIndex + 2, secondIndex);
 
-        int targetLine2 = findSubstringLines(homeOrigFileCont, "//const stvar = \"hello\";")-3;
+        int targetLine2 = findSubstringLines(homeOrigFileCont, "//const stvar = \"hello\";")-7;
         String desLine2 = homeOrigFileContList.get(targetLine2).toString();
         int firstIndex2 = findNthOccurrence(desLine2, "'",1);
         int secondIndex2 = findNthOccurrence(desLine2, "'",2);
@@ -194,7 +194,9 @@ public class OtherFunctions {
 
             desLine = desLine.replaceFirst("'"+origNameWithSpaces+"'", "'"+movieNameWithSpaces+"'");
             desLine = desLine.replaceFirst("'/"+origNameWithoutSpaces+"'", "'/"+movieNameWithoutSpaces+"'");
-            newHomeContentArrList.add(targetLine-2, desLine);
+            desLine = desLine.replaceFirst("\""+origNameWithSpaces+"\"", "\""+movieNameWithSpaces+"\"");
+            newHomeContentArrList.add(targetLine-6, desLine);
+            //newHomeContentArrList.add(targetLine-2, desLine);
         }
         else{
             int targetLine = findSubstringLines(newHomeContent, "text: '"+origEditedNameWithSpaces+"'");
