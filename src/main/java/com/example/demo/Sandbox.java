@@ -14,16 +14,16 @@ import java.io.IOException;
 public class Sandbox {
     public static void main(String[] args) throws JsonProcessingException {
         OtherFunctions otherFunctions = new OtherFunctions();
-        String poster = otherFunctions.getMoviePoster("The+Autopsy+Of+Jane+Doe");
+        String poster = otherFunctions.getMoviePoster("The+Autopsy+of+Jane+Doe");
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //ObjectMapper objectMapper = new ObjectMapper();
+        //objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         // Deserialize the JSON string directly into a Person object
-        Poster moviePoster = objectMapper.readValue(poster, Poster.class);
+        //Poster moviePoster = objectMapper.readValue(poster, Poster.class);
 
         // Access the fields using standard Java getters
-        System.out.println("Poster: " + moviePoster.getPoster());
+        System.out.println(poster);
         //System.out.println("Age: " + person.getPoster());
 
 

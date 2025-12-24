@@ -310,6 +310,7 @@ public class OtherFunctions {
                 .header("Accept", "application/json") // Common header for JSON APIs
                 .GET() // Specify the HTTP method (GET, POST, PUT, DELETE, etc.)
                 .build();
+        String posterResp = null;
         String poster = null;
         try {
             // 3. Send the request synchronously and receive the response
@@ -320,7 +321,21 @@ public class OtherFunctions {
             if (response.statusCode() == 200) {
                 System.out.println("Response Body: " + response.body());
 
-                poster = response.body();
+                posterResp = response.body();
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+                // Deserialize the JSON string directly into a Person object
+                Poster moviePoster = objectMapper.readValue(posterResp, Poster.class);
+                String responseString = posterResp.toString();
+
+                if(responseString.equals("{\"Response\":\"False\",\"Error\":\"Movie not found!\"}")){
+                    poster = "error";
+                }
+                else{
+                    poster = moviePoster.getPoster();
+                }
                 // You would typically parse the JSON response here
             } else {
                 System.err.println("API request failed with status code: " + response.statusCode());
@@ -331,20 +346,6 @@ public class OtherFunctions {
             e.printStackTrace();
             poster = "error";
         }
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        // Deserialize the JSON string directly into a Person object
-        Poster moviePoster = objectMapper.readValue(poster, Poster.class);
-
-        // Access the fields using standard Java getters
-        System.out.println("Poster: " + moviePoster.getPoster());
-        if (poster.equals("error")) {
-            return "error";
-        }
-        else {
-            return moviePoster.getPoster();
-        }
+        return poster;
     }
 }
