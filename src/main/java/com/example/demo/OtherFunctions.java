@@ -37,6 +37,7 @@ public class OtherFunctions {
 
     public static String modifyJsContent(String originalContent, String movieNameWithoutSpaces) {
         return originalContent.replace("NewFunc", movieNameWithoutSpaces);
+        //this comment is so I can commit a new change to see what's wrong
     }
 
     public static int findSubstringLines(String mainString, String substring) {
