@@ -2,18 +2,15 @@ package com.example.demo;
 import org.kohsuke.github.*;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 @RestController
 public class SubmitController {
     @CrossOrigin(origins = {"http://localhost:3000",
-            "https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/",
+            "https://green-smoke-0fa35931e.6.azurestaticapps.net/",
             "https://www.aprilshorrorcorner.com",
             "https://aprilshorrorcorner.com",
-            "https://green-smoke-0fa35931e.6.azurestaticapps.net/"})
+            "https://zealous-desert-09313150f.6.azurestaticapps.net/"})
 
     @PostMapping("/submitEndpoint")
 
@@ -24,6 +21,9 @@ public class SubmitController {
 
         String repoName = constants.repoName;
         String gitToken = constants.gitToken;
+        String repoOwner = constants.repoOwner;
+        String branch = constants.branch; // Or your target branch
+
         boolean submitFlag = true;
 
         String movieNameAsEntered = requestDTO.getMovieName(); //This is the movie name without spaces
@@ -35,53 +35,23 @@ public class SubmitController {
         String origEditedNameWithSpaces = movieNameWithSpaces;
         String origEditedNameWithoutSpaces = movieNameWithoutSpaces;
 
-        otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview);
+        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview);
 
-        Timer timer = new Timer(); // Create a Timer object
-        TimerTask task = new TimerTask() {
+        List<String> origNameList = otherFunctions.getOrigName();
+        String origNameWithoutSpaces = origNameList.get(0);
+        String origNameWithSpaces = origNameList.get(1);
+        String newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithoutSpaces, origEditedNameWithoutSpaces);
+        newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, newHomeContent);
+        newHomeContent = otherFunctions.addImportLine(movieNameWithoutSpaces, origEditedNameWithoutSpaces, newHomeContent, submitFlag);
 
-            @Override
-            public void run() {
+        Map<String, String> filesContent = new HashMap<>();
 
-                String repoOwner = constants.repoOwner;
-                String filePath = "src/pages/Home.js";
-                String branch = constants.branch; // Or your target branch
+        // Adding items
+        filesContent.put("src/pages/"+movieNameWithoutSpaces+".js", newPagesFileContent);
+        filesContent.put("src/pages/Home.js", newHomeContent);
 
-                String origNameWithoutSpaces = null;
-                String origNameWithSpaces = null;
-                List<String> origNameList = new ArrayList<>();
-                String newHomeContent = null;
-                GitHub githubHome = null;
-                GHRepository repoHome = null;
-                GHContent contentHome = null;
+        otherFunctions.submitMultipleFiles(filesContent, gitToken, repoOwner, repoName, branch);
 
-                try {
-
-                    origNameList = otherFunctions.getOrigName();
-                    origNameWithoutSpaces = origNameList.get(0);
-                    origNameWithSpaces = origNameList.get(1);
-                    newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithoutSpaces, origEditedNameWithoutSpaces);
-                    newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, newHomeContent);
-                    newHomeContent = otherFunctions.addImportLine(movieNameWithoutSpaces, origEditedNameWithoutSpaces, newHomeContent, submitFlag);
-
-                    githubHome = new GitHubBuilder().withOAuthToken(gitToken).build();
-                    repoHome = githubHome.getUser(repoOwner).getRepository(repoName);
-                    contentHome = repoHome.getFileContent(filePath, branch);
-                    repoHome.createContent()
-                            .path(filePath)
-                            .content(newHomeContent.getBytes("UTF-8"))
-                            .message("Updated file via Java API")
-                            .sha(contentHome.getSha()) // Important for optimistic locking
-                            .branch(branch)
-                            .commit();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-
-            }
-        };
-        timer.schedule(task,constants.timeDelay);
         return "You have submitted your review. Please wait a few minutes for the website to refresh.";
 
     }
