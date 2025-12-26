@@ -12,7 +12,8 @@ public class DeleteController {
     @CrossOrigin(origins = {"http://localhost:3000",
             "https://delightful-mushroom-0b98f760f.3.azurestaticapps.net/",
             "https://www.aprilshorrorcorner.com",
-            "https://aprilshorrorcorner.com"})
+            "https://aprilshorrorcorner.com",
+            "https://green-smoke-0fa35931e.6.azurestaticapps.net/"})
 
     @PostMapping("/deleteEndpoint")
 
