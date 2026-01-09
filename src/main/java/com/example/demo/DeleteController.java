@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @RestController
 public class DeleteController {
@@ -25,8 +23,9 @@ public class DeleteController {
         Constants constants = new Constants();
 
         movieName = movieName.substring(0, movieName.length() - 1);
-        String movieNameWithSpaces = movieName.replace("+", " ");
+        String movieNameWithSpaces = otherFunctions.decodeMovieURL(movieName);
         String movieNameWithoutSpaces = movieNameWithSpaces.replace(" ", "");
+        movieNameWithoutSpaces = movieNameWithoutSpaces.replaceAll("[^a-zA-Z0-9]", "");
 
         String repoOwner = constants.repoOwner;
         String repoName = constants.repoName;
@@ -40,13 +39,14 @@ public class DeleteController {
         GHContent stuff = repo.getFileContent(filePath, branch);
         String origFileCont = new String(stuff.read().readAllBytes(), "UTF-8");
 
-        String newPagesFileContent = otherFunctions.removeFile(movieNameWithSpaces, origFileCont);
+        String newPagesFileContent = otherFunctions.removeFile(movieNameWithoutSpaces, origFileCont);
 
         Map<String, String> filesContent = new HashMap<>();
         // Adding items
         filesContent.put("src/pages/Home.js", newPagesFileContent);
 
         otherFunctions.commitDeletedFiles(filesContent, gitToken, repoOwner, repoName, branch, movieNameWithoutSpaces);
+        //otherFunctions.commitDeletedFiles(filesContent, gitToken, repoOwner, repoName, branch, movNameWithoutSpaces);
 
         return "You have successfully deleted "+movieNameWithSpaces+". Please wait a few minutes for the website to refresh.";
     }

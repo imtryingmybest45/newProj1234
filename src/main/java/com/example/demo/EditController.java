@@ -33,9 +33,11 @@ public class EditController {
 
         String movieNameWithSpaces = movieNameAsEntered.substring(0, movieNameAsEntered.length());
         String movieNameWithoutSpaces = movieNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
+        movieNameWithoutSpaces = movieNameWithoutSpaces.replaceAll("[^a-zA-Z0-9]", "");
 
         String origEditedNameWithSpaces = origEditedName.substring(0, origEditedName.length());
         String origEditedNameWithoutSpaces = origEditedNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
+        origEditedNameWithoutSpaces = origEditedNameWithoutSpaces.replaceAll("[^a-zA-Z0-9]", "");
 
         String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview);
 
@@ -43,11 +45,11 @@ public class EditController {
         // Adding items
         filesContent.put("src/pages/"+movieNameWithoutSpaces+".js", newPagesFileContent);
 
-        if (!origEditedNameWithoutSpaces.equals(movieNameWithoutSpaces)){
+        if (!origEditedNameWithSpaces.equals(movieNameWithSpaces)){
             List<String> origNameList = otherFunctions.getOrigName();
             String origNameWithoutSpaces = origNameList.get(0);
             String origNameWithSpaces = origNameList.get(1);
-            String newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithoutSpaces, origEditedNameWithoutSpaces);
+            String newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces);
             newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, newHomeContent);
             newHomeContent = otherFunctions.addImportLine(movieNameWithoutSpaces, origEditedNameWithoutSpaces, newHomeContent, submitFlag);
 

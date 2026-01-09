@@ -6,9 +6,11 @@ import org.kohsuke.github.*;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 
@@ -37,7 +39,6 @@ public class OtherFunctions {
 
     public static String modifyJsContent(String originalContent, String movieNameWithoutSpaces) {
         return originalContent.replace("NewFunc", movieNameWithoutSpaces);
-        //this comment is so I can commit a new change to see what's wrong
     }
 
     public static int findSubstringLines(String mainString, String substring) {
@@ -69,14 +70,15 @@ public class OtherFunctions {
         String funcFileContent = new String(funcTemplateFileContent.read().readAllBytes(), "UTF-8");
 
         String fileContent = modifyJsContent(funcFileContent, movieNameWithoutSpaces);
-        String poster = getMoviePoster(movieNameWithSpaces.replaceAll(" ","+"));
+        String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
+        String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"));
 
         movieReview = movieReview.replace("\n", "\\n");
-        movieReview = movieReview.replace("\"","\\\"");
+        movieReview = movieReview.replace("\"", "\\\"");
 
-        fileContent = fileContent.replace("Insert movie name here",movieNameWithSpaces);
-        fileContent = fileContent.replace("Insert movie review here",movieReview); //originally said modified string
-        fileContent = fileContent.replace("Insert Movie Poster Here",poster);
+        fileContent = fileContent.replace("Insert movie name here", movieNameWithSpaces);
+        fileContent = fileContent.replace("Insert movie review here", movieReview); //originally said modified string
+        fileContent = fileContent.replace("Insert Movie Poster Here", poster);
 
         return fileContent;
     }
@@ -123,10 +125,10 @@ public class OtherFunctions {
         int secondIndex = desLine.indexOf("\"", firstIndex + 1);
         String origName = desLine.substring(firstIndex + 2, secondIndex);
 
-        int targetLine2 = findSubstringLines(homeOrigFileCont, "//const stvar = \"hello\";")-7;
+        int targetLine2 = findSubstringLines(homeOrigFileCont, "//const stvar = \"hello\";") - 7;
         String desLine2 = homeOrigFileContList.get(targetLine2).toString();
-        int firstIndex2 = findNthOccurrence(desLine2, "'",1);
-        int secondIndex2 = findNthOccurrence(desLine2, "'",2);
+        int firstIndex2 = findNthOccurrence(desLine2, "\"", 1);
+        int secondIndex2 = findNthOccurrence(desLine2, "\"", 2);
         String origNameAsTyped = desLine2.substring(firstIndex2 + 1, secondIndex2);
 
         List<String> origNameList = new ArrayList<>();
@@ -135,7 +137,8 @@ public class OtherFunctions {
 
         return origNameList;
     }
-    public static String editRoutesAppFile(String movieNameWithoutSpaces, String origEditedNameWithoutSpaces) throws IOException {
+
+    public static String editRoutesAppFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces) throws IOException {
 
         Constants constants = new Constants();
 
@@ -154,7 +157,7 @@ public class OtherFunctions {
         String[] linesArray = origHomeFileCont.split("\r?\n");
         List<String> origHomeFileContList = new ArrayList<>(Arrays.asList(linesArray));
 
-        if(origEditedNameWithoutSpaces.equals(movieNameWithoutSpaces)) {
+        if (origEditedNameWithSpaces.equals(movieNameWithSpaces)) {
 
             int targetLine = findSubstringLines(origHomeFileCont, "</Routes>");
             String desLine = origHomeFileContList.get(targetLine - 1).toString();
@@ -163,11 +166,10 @@ public class OtherFunctions {
             String origName = desLine.substring(firstIndex + 2, secondIndex);
             String newContentLine = desLine.replace(origName, movieNameWithoutSpaces);
             origHomeFileContList.add(targetLine, newContentLine);
-        }
-        else{
-            int targetLine = findSubstringLines(origHomeFileCont, "<Route path=\"/"+origEditedNameWithoutSpaces+"\"");
+        } else {
+            int targetLine = findSubstringLines(origHomeFileCont, "<Route path=\"/" + origEditedNameWithoutSpaces + "\"");
             String desLine = origHomeFileContList.get(targetLine).toString();
-            desLine = desLine.replace(origEditedNameWithoutSpaces,movieNameWithoutSpaces);
+            desLine = desLine.replace(origEditedNameWithoutSpaces, movieNameWithoutSpaces);
             origHomeFileContList.set(targetLine, desLine);
         }
 
@@ -180,50 +182,50 @@ public class OtherFunctions {
         String[] newHomeContentList = newHomeContent.split("\r?\n");
         List<String> newHomeContentArrList = new ArrayList<>(Arrays.asList(newHomeContentList));
 
-        if(origEditedNameWithoutSpaces.equals(movieNameWithoutSpaces)) {
-
+        if (origEditedNameWithSpaces.equals(movieNameWithSpaces)) {
+            
             int targetLine = findSubstringLines(newHomeContent, "//const stvar = \"hello\";");
             //String desLine = newHomeContentArrList.get(targetLine-3).toString();
-            String desLine = newHomeContentArrList.get(targetLine-7).toString();
+            String desLine = newHomeContentArrList.get(targetLine - 7).toString();
             String newLinkNumber = Integer.toString(getIDNumber(desLine));
             String prevLinkNumber = Integer.toString(getIDNumber(desLine) - 1);
             desLine = desLine.replaceFirst(prevLinkNumber, newLinkNumber);
 
-            desLine = desLine.replaceFirst("'"+origNameWithSpaces+"'", "'"+movieNameWithSpaces+"'");
-            desLine = desLine.replaceFirst("'/"+origNameWithoutSpaces+"'", "'/"+movieNameWithoutSpaces+"'");
-            desLine = desLine.replaceFirst("\""+origNameWithSpaces+"\"", "\""+movieNameWithSpaces+"\"");
-            newHomeContentArrList.add(targetLine-6, desLine);
+            desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            desLine = desLine.replaceFirst("\"/" + origNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
+            desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            newHomeContentArrList.add(targetLine - 6, desLine);
             //newHomeContentArrList.add(targetLine-2, desLine);
-        }
-        else{
-            int targetLine = findSubstringLines(newHomeContent, "text: '"+origEditedNameWithSpaces+"'");
+        } else {
+
+            int targetLine = findSubstringLines(newHomeContent, "text: \"" + origEditedNameWithSpaces + "\"");
             String desLine = newHomeContentArrList.get(targetLine).toString();
-            desLine = desLine.replaceFirst("'"+origEditedNameWithSpaces+"'", "'"+movieNameWithSpaces+"'");
-            desLine = desLine.replaceFirst("'/"+origEditedNameWithoutSpaces+"'", "'/"+movieNameWithoutSpaces+"'");
-            desLine = desLine.replaceFirst("\""+origEditedNameWithSpaces+"\"", "\""+movieNameWithSpaces+"\"");
+            desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            desLine = desLine.replaceFirst("\"/" + origEditedNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
+            desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             newHomeContentArrList.set(targetLine, desLine);
         }
 
         String newContentRev2 = String.join("\n", newHomeContentArrList);
         return newContentRev2;
     }
+
     public static String addImportLine(String movieNameWithoutSpaces, String origEditedNameWithoutSpaces, String newHomeContent, boolean submitFlag) throws IOException {
         String desLine = "import " + movieNameWithoutSpaces + " from " + "'./" + movieNameWithoutSpaces + "';";
         String[] newHomeContentList = newHomeContent.split("\r?\n");
-        List<String> newHomeContentArrList= new ArrayList<>(Arrays.asList(newHomeContentList));
-        if(!submitFlag) {
+        List<String> newHomeContentArrList = new ArrayList<>(Arrays.asList(newHomeContentList));
+        if (!submitFlag) {
             int targetLine = findSubstringLines(newHomeContent, "import " + origEditedNameWithoutSpaces + " from " + "'./" + origEditedNameWithoutSpaces + "';");
             String newDesLine = "import " + movieNameWithoutSpaces + " from " + "'./" + movieNameWithoutSpaces + "';";
             newHomeContentArrList.set(targetLine, newDesLine);
-        }
-        else{
+        } else {
             newHomeContentArrList.add(0, desLine);
         }
         String newContentRev3 = String.join("\n", newHomeContentArrList);
         return newContentRev3;
     }
 
-    public static String addSpacesToString(String s){
+    public static String addSpacesToString(String s) {
         String modifiedString = s.replaceAll("(?<!^)(?=[A-Z0-9])", " ");
         //String modifiedString = s.replaceAll("(?<!^)(?=[A-Z])", " ");
 
@@ -240,7 +242,7 @@ public class OtherFunctions {
         myStringList.add("In");
         myStringList.add("Or");
         myStringList.add("For");
-        for (int i=1; i<words.length; i++) {
+        for (int i = 1; i < words.length; i++) {
             String word = words[i];
             if (myStringList.contains(word)) {
                 String lowerWord = word.toLowerCase();
@@ -250,21 +252,22 @@ public class OtherFunctions {
         String combinedString = String.join(" ", wordsList);
         return combinedString;
     }
-    public static String removeFile(String movieName, String origFileCont){
+
+    public static String removeFile(String movNameWithoutSpaces, String origFileCont) {
 
         String[] words = origFileCont.split("\\R");
         ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(words));
-        String movNameWithoutSpaces = movieName.replaceAll("\\s+", "");
+        //String movNameWithoutSpaces = movieName.replaceAll("\\s+", "");
 
-        for(int i=0;i<arrayList.size();i++) {
-            if (words[i].contains("\"/" +movNameWithoutSpaces+'\"')) {
-                arrayList.set(i,"Line to Remove");
+        for (int i = 0; i < arrayList.size(); i++) {
+            if (words[i].contains("\"/" + movNameWithoutSpaces + '\"')) {
+                arrayList.set(i, "Line to Remove");
             }
-            if (words[i].contains("'./" +movNameWithoutSpaces+"'")) {
-                arrayList.set(i,"Line to Remove");
+            if (words[i].contains("'./" + movNameWithoutSpaces + "'")) {
+                arrayList.set(i, "Line to Remove");
             }
-            if (words[i].contains("to: '/" +movNameWithoutSpaces+"'")) {
-                arrayList.set(i,"Line to Remove");
+            if (words[i].contains("to: '/" + movNameWithoutSpaces + "'")) {
+                arrayList.set(i, "Line to Remove");
             }
         }
         arrayList.removeAll(Collections.singleton("Line to Remove"));
@@ -307,7 +310,7 @@ public class OtherFunctions {
 
         // 2. Build the HttpRequest object
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://www.omdbapi.com/?t="+movieQuery+"&apikey=98f9696d")) // Replace with your API URL
+                .uri(URI.create("http://www.omdbapi.com/?t=" + movieQuery + "&apikey=98f9696d")) // Replace with your API URL
                 .header("Accept", "application/json") // Common header for JSON APIs
                 .GET() // Specify the HTTP method (GET, POST, PUT, DELETE, etc.)
                 .build();
@@ -331,10 +334,9 @@ public class OtherFunctions {
                 Poster moviePoster = objectMapper.readValue(posterResp, Poster.class);
                 String responseString = posterResp.toString();
 
-                if(responseString.equals("{\"Response\":\"False\",\"Error\":\"Movie not found!\"}")){
+                if (responseString.equals("{\"Response\":\"False\",\"Error\":\"Movie not found!\"}")) {
                     poster = "error";
-                }
-                else{
+                } else {
                     poster = moviePoster.getPoster();
                 }
                 // You would typically parse the JSON response here
@@ -366,7 +368,7 @@ public class OtherFunctions {
         for (Map.Entry<String, String> entry : filesContent.entrySet()) {
             String pathToFile = entry.getKey();
             String contentOfFile = entry.getValue();
-            treeBuilder.textEntry(pathToFile, contentOfFile,false);
+            treeBuilder.textEntry(pathToFile, contentOfFile, false);
         }
 
         // 4. Create the new tree on GitHub
@@ -406,11 +408,11 @@ public class OtherFunctions {
         for (Map.Entry<String, String> entry : filesContent.entrySet()) {
             String pathToFile = entry.getKey();
             String contentOfFile = entry.getValue();
-            treeBuilder.textEntry(pathToFile, contentOfFile,false);
+            treeBuilder.textEntry(pathToFile, contentOfFile, false);
         }
 
-        if (!origMovieNameWithoutSpaces.equals(movieNameWithoutSpaces)){
-            treeBuilder.delete("src/pages/"+origMovieNameWithoutSpaces+".js");
+        if (!origMovieNameWithoutSpaces.equals(movieNameWithoutSpaces)) {
+            treeBuilder.delete("src/pages/" + origMovieNameWithoutSpaces + ".js");
         }
 
         // 4. Create the new tree on GitHub
@@ -433,6 +435,7 @@ public class OtherFunctions {
 
         System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
     }
+
     public static void commitDeletedFiles(Map<String, String> filesContent, String gitToken, String repoOwner, String repoName, String branchName, String movieNameWithoutSpaces) throws IOException {
 
         GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
@@ -449,10 +452,10 @@ public class OtherFunctions {
         for (Map.Entry<String, String> entry : filesContent.entrySet()) {
             String pathToFile = entry.getKey();
             String contentOfFile = entry.getValue();
-            treeBuilder.textEntry(pathToFile, contentOfFile,false);
+            treeBuilder.textEntry(pathToFile, contentOfFile, false);
         }
 
-        treeBuilder.delete("src/pages/"+movieNameWithoutSpaces+".js");
+        treeBuilder.delete("src/pages/" + movieNameWithoutSpaces + ".js");
 
         // 4. Create the new tree on GitHub
         GHTree newTree = treeBuilder.create();
@@ -474,6 +477,15 @@ public class OtherFunctions {
 
         System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
     }
+
+    public static String decodeMovieURL(String movieQuery) {
+
+        // It is critical to specify the character encoding, preferably UTF-8
+        String decodedString = URLDecoder.decode(movieQuery, StandardCharsets.UTF_8);
+
+        return decodedString;
+    }
 }
+
 
 
