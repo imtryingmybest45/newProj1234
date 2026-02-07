@@ -203,9 +203,10 @@ public class OtherFunctions {
 
             int targetLine = findSubstringLines(newHomeContent, "text: \"" + origEditedNameWithSpaces + "\"");
             desLine = newHomeContentArrList.get(targetLine).toString();
-            desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            desLine = desLine.replace("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            //desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = desLine.replaceFirst("\"/" + origEditedNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
-            desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            //desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = replaceMoviePoster(movieNameWithSpaces, desLine);
             desLine = replaceMovieTier(movieTier, desLine);
             newHomeContentArrList.set(targetLine, desLine);
