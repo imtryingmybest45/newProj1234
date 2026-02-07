@@ -10,7 +10,8 @@ public class SubmitController {
             "https://green-smoke-0fa35931e.6.azurestaticapps.net/",
             "https://www.aprilshorrorcorner.com",
             "https://aprilshorrorcorner.com",
-            "https://zealous-desert-09313150f.6.azurestaticapps.net/"})
+            "https://zealous-desert-09313150f.6.azurestaticapps.net/",
+            "https://help.aprilshorrorcorner.com"})
 
     @PostMapping("/submitEndpoint")
 
@@ -28,6 +29,7 @@ public class SubmitController {
 
         String movieNameAsEntered = requestDTO.getMovieName(); //This is the movie name without spaces
         String movieReview = requestDTO.getMovieReview();
+        String movieTier = requestDTO.getMovieTier();
 
         String movieNameWithSpaces = movieNameAsEntered.substring(0, movieNameAsEntered.length());
         String movieNameWithoutSpaces = movieNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
@@ -36,13 +38,13 @@ public class SubmitController {
         String origEditedNameWithSpaces = movieNameWithSpaces;
         String origEditedNameWithoutSpaces = movieNameWithoutSpaces;
 
-        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview);
+        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview, movieTier);
 
         List<String> origNameList = otherFunctions.getOrigName();
         String origNameWithoutSpaces = origNameList.get(0);
         String origNameWithSpaces = origNameList.get(1);
         String newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces);
-        newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, newHomeContent);
+        newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent);
         newHomeContent = otherFunctions.addImportLine(movieNameWithoutSpaces, origEditedNameWithoutSpaces, newHomeContent, submitFlag);
 
         Map<String, String> filesContent = new HashMap<>();

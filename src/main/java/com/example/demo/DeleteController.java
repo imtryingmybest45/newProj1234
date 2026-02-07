@@ -13,7 +13,8 @@ public class DeleteController {
             "https://green-smoke-0fa35931e.6.azurestaticapps.net/",
             "https://www.aprilshorrorcorner.com",
             "https://aprilshorrorcorner.com",
-            "https://zealous-desert-09313150f.6.azurestaticapps.net/"})
+            "https://zealous-desert-09313150f.6.azurestaticapps.net/",
+            "https://help.aprilshorrorcorner.com"})
 
     @PostMapping("/deleteEndpoint")
 

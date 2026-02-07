@@ -53,7 +53,7 @@ public class OtherFunctions {
         return theLineNum;
     }
 
-    public static String writeNewPagesFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String movieReview) throws IOException {
+    public static String writeNewPagesFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String movieReview, String movieTier) throws IOException {
 
         Constants constants = new Constants();
 
@@ -79,6 +79,7 @@ public class OtherFunctions {
         fileContent = fileContent.replace("Insert movie name here", movieNameWithSpaces);
         fileContent = fileContent.replace("Insert movie review here", movieReview); //originally said modified string
         fileContent = fileContent.replace("Insert Movie Poster Here", poster);
+        fileContent = fileContent.replace("Insert Movie Tier here", movieTier);
 
         return fileContent;
     }
@@ -177,16 +178,17 @@ public class OtherFunctions {
         return newHomeContent;
     }
 
-    public static String editLinksAppFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String origNameWithSpaces, String origNameWithoutSpaces, String newHomeContent) throws IOException {
+    public static String editLinksAppFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String origNameWithSpaces, String origNameWithoutSpaces, String movieTier, String newHomeContent) throws IOException {
 
         String[] newHomeContentList = newHomeContent.split("\r?\n");
+        String desLine = "";
         List<String> newHomeContentArrList = new ArrayList<>(Arrays.asList(newHomeContentList));
 
         if (origEditedNameWithSpaces.equals(movieNameWithSpaces)) {
             
             int targetLine = findSubstringLines(newHomeContent, "//const stvar = \"hello\";");
             //String desLine = newHomeContentArrList.get(targetLine-3).toString();
-            String desLine = newHomeContentArrList.get(targetLine - 7).toString();
+            desLine = newHomeContentArrList.get(targetLine - 7).toString();
             String newLinkNumber = Integer.toString(getIDNumber(desLine));
             String prevLinkNumber = Integer.toString(getIDNumber(desLine) - 1);
             desLine = desLine.replaceFirst(prevLinkNumber, newLinkNumber);
@@ -194,15 +196,19 @@ public class OtherFunctions {
             desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = desLine.replaceFirst("\"/" + origNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
             desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            desLine = replaceMoviePoster(movieNameWithSpaces, desLine);
+            desLine = replaceMovieTier(movieTier, desLine);
             newHomeContentArrList.add(targetLine - 6, desLine);
-            //newHomeContentArrList.add(targetLine-2, desLine);
+
         } else {
 
             int targetLine = findSubstringLines(newHomeContent, "text: \"" + origEditedNameWithSpaces + "\"");
-            String desLine = newHomeContentArrList.get(targetLine).toString();
+            desLine = newHomeContentArrList.get(targetLine).toString();
             desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = desLine.replaceFirst("\"/" + origEditedNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
             desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            desLine = replaceMoviePoster(movieNameWithSpaces, desLine);
+            desLine = replaceMovieTier(movieTier, desLine);
             newHomeContentArrList.set(targetLine, desLine);
         }
 
@@ -321,9 +327,9 @@ public class OtherFunctions {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             // 4. Check the response status code and body
-            System.out.println("Status Code: " + response.statusCode());
+            // System.out.println("Status Code: " + response.statusCode());
             if (response.statusCode() == 200) {
-                System.out.println("Response Body: " + response.body());
+                // System.out.println("Response Body: " + response.body());
 
                 posterResp = response.body();
 
@@ -389,7 +395,7 @@ public class OtherFunctions {
         // 6. Update the branch reference to point to the new commit
         //repo.updateRef("refs/heads/" + branchName, newCommit.getSHA1());
 
-        System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
+        // System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
     }
 
     public static void commitEditedFiles(Map<String, String> filesContent, String gitToken, String repoOwner, String repoName, String branchName, String origMovieNameWithoutSpaces, String movieNameWithoutSpaces) throws IOException {
@@ -433,7 +439,7 @@ public class OtherFunctions {
         // 6. Update the branch reference to point to the new commit
         //repo.updateRef("refs/heads/" + branchName, newCommit.getSHA1());
 
-        System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
+        // System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
     }
 
     public static void commitDeletedFiles(Map<String, String> filesContent, String gitToken, String repoOwner, String repoName, String branchName, String movieNameWithoutSpaces) throws IOException {
@@ -475,7 +481,7 @@ public class OtherFunctions {
         // 6. Update the branch reference to point to the new commit
         //repo.updateRef("refs/heads/" + branchName, newCommit.getSHA1());
 
-        System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
+        // System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
     }
 
     public static String decodeMovieURL(String movieQuery) {
@@ -484,6 +490,60 @@ public class OtherFunctions {
         String decodedString = URLDecoder.decode(movieQuery, StandardCharsets.UTF_8);
 
         return decodedString;
+    }
+
+    public static String replaceMoviePoster(String movieNameWithSpaces, String desLine) throws JsonProcessingException {
+        String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
+        String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"));
+        String desSubString = "moviePoster";
+        int startMovPostInd = desLine.indexOf(desSubString) + desSubString.length();
+        int endMovPostInd = desLine.indexOf("', tier:");
+        String oldMoviePoster = desLine.substring(startMovPostInd + 3, endMovPostInd);
+        desLine = desLine.replace(oldMoviePoster, poster);
+        return desLine;
+    }
+
+    public static String replaceMovieTier(String movieTier, String desLine) throws JsonProcessingException {
+        String desSubString = "tier: ";
+        int startTierInd = desLine.indexOf(desSubString) + desSubString.length();
+        String oldTier = desLine.substring(startTierInd + 1, startTierInd + 2);
+        int start = desLine.lastIndexOf(oldTier);
+        StringBuilder builder = new StringBuilder();
+        builder.append(desLine.substring(0, start));
+        builder.append(movieTier);
+        builder.append(desLine.substring(start + oldTier.length()));
+        desLine = builder.toString();
+        return desLine;
+    }
+
+    public static String editTier(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String movieTier) throws IOException {
+        Constants constants = new Constants();
+
+        String gitToken = System.getenv("HEDGEHOG");
+        String repoOwner = constants.repoOwner;
+        String repoName = constants.repoName;
+        String branch = constants.branch; // Or your target branch
+        String homeFilePath = "src/pages/Home.js";
+
+        GitHub github = new GitHubBuilder().withOAuthToken(gitToken).build();
+        GHRepository repo = github.getUser(repoOwner).getRepository(repoName);
+
+        GHContent stuff = repo.getFileContent(homeFilePath, branch);
+        String origHomeFileCont = new String(stuff.read().readAllBytes(), "UTF-8");
+
+        String[] newHomeContentList = origHomeFileCont.split("\r?\n");
+        String desLine = "";
+        List<String> newHomeContentArrList = new ArrayList<>(Arrays.asList(newHomeContentList));
+
+        int targetLine = findSubstringLines(origHomeFileCont, "text: \"" + origEditedNameWithSpaces + "\"");
+        desLine = newHomeContentArrList.get(targetLine).toString();
+
+        desLine = replaceMovieTier(movieTier, desLine);
+        newHomeContentArrList.set(targetLine, desLine);
+
+        String newContentRev2 = String.join("\n", newHomeContentArrList);
+        return newContentRev2;
+
     }
 }
 
