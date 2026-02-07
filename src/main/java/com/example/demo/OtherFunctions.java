@@ -193,9 +193,8 @@ public class OtherFunctions {
             String prevLinkNumber = Integer.toString(getIDNumber(desLine) - 1);
             desLine = desLine.replaceFirst(prevLinkNumber, newLinkNumber);
 
-            desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            desLine = desLine.replace("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = desLine.replaceFirst("\"/" + origNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
-            desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = replaceMoviePoster(movieNameWithSpaces, desLine);
             desLine = replaceMovieTier(movieTier, desLine);
             newHomeContentArrList.add(targetLine - 6, desLine);
