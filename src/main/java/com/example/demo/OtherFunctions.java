@@ -516,7 +516,7 @@ public class OtherFunctions {
         int endRevInd = startRevInd+1;
         String oldRev = desLine.substring(startRevInd, endRevInd);
         String newRev;
-        if (wordCount > 5){
+        if (wordCount > 500){
             newRev = "Y";
         }
         else{
