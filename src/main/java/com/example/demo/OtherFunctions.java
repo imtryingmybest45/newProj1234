@@ -72,6 +72,9 @@ public class OtherFunctions {
         String fileContent = modifyJsContent(funcFileContent, movieNameWithoutSpaces);
         String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
         String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"));
+        if (Objects.equals(poster, "'N/A'")) {
+            poster = "boo";
+        }
 
         movieReview = movieReview.replace("\n", "\\n");
         movieReview = movieReview.replace("\"", "\\\"");
