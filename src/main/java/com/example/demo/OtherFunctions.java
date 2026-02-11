@@ -347,12 +347,7 @@ public class OtherFunctions {
                     poster = "boo";
                 } else {
                     poster = moviePoster.getPoster();
-                    if (poster == "N/A"){
-                        poster = "boo";
-                    }
-                    else{
-                        poster = "'" + poster + "'";
-                    }
+                    poster = "'" + poster + "'";
                 }
                 // You would typically parse the JSON response here
             } else {
@@ -504,6 +499,9 @@ public class OtherFunctions {
     public static String replaceMoviePoster(String movieNameWithSpaces, String desLine) throws JsonProcessingException {
         String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
         String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"));
+        if (Objects.equals(poster, "'N/A'")) {
+            poster = "boo";
+        }
         String desSubString = "moviePoster";
         int startMovPostInd = desLine.indexOf(desSubString) + desSubString.length();
         // int endMovPostInd = desLine.indexOf("', tier:");
