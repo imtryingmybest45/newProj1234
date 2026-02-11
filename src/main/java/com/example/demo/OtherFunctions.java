@@ -347,7 +347,12 @@ public class OtherFunctions {
                     poster = "boo";
                 } else {
                     poster = moviePoster.getPoster();
-                    poster = "'" + poster + "'";
+                    if (poster == "N/A"){
+                        poster = "boo";
+                    }
+                    else{
+                        poster = "'" + poster + "'";
+                    }
                 }
                 // You would typically parse the JSON response here
             } else {
