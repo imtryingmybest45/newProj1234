@@ -53,12 +53,12 @@ public class EditController {
             String origNameWithoutSpaces = origNameList.get(0);
             String origNameWithSpaces = origNameList.get(1);
             newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces);
-            newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent);
+            newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent,movieReview);
             newHomeContent = otherFunctions.addImportLine(movieNameWithoutSpaces, origEditedNameWithoutSpaces, newHomeContent, submitFlag);
 
             filesContent.put("src/pages/Home.js", newHomeContent);
         } else {
-            newHomeContent = otherFunctions.editTier(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, movieTier);
+            newHomeContent = otherFunctions.editTier(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, movieTier, movieReview);
             filesContent.put("src/pages/Home.js", newHomeContent);
         }
 

@@ -78,7 +78,7 @@ public class OtherFunctions {
 
         fileContent = fileContent.replace("Insert movie name here", movieNameWithSpaces);
         fileContent = fileContent.replace("Insert movie review here", movieReview); //originally said modified string
-        fileContent = fileContent.replace("Insert Movie Poster Here", poster);
+        fileContent = fileContent.replace("ImgPoster", poster);
         fileContent = fileContent.replace("Insert Movie Tier here", movieTier);
 
         return fileContent;
@@ -178,7 +178,7 @@ public class OtherFunctions {
         return newHomeContent;
     }
 
-    public static String editLinksAppFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String origNameWithSpaces, String origNameWithoutSpaces, String movieTier, String newHomeContent) throws IOException {
+    public static String editLinksAppFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String origNameWithSpaces, String origNameWithoutSpaces, String movieTier, String newHomeContent, String movieReview) throws IOException {
 
         String[] newHomeContentList = newHomeContent.split("\r?\n");
         String desLine = "";
@@ -194,9 +194,12 @@ public class OtherFunctions {
             desLine = desLine.replaceFirst(prevLinkNumber, newLinkNumber);
 
             desLine = desLine.replace("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
+            //desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = desLine.replaceFirst("\"/" + origNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
+            //desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = replaceMoviePoster(movieNameWithSpaces, desLine);
             desLine = replaceMovieTier(movieTier, desLine);
+            desLine = movieLength(movieReview, desLine);
             newHomeContentArrList.add(targetLine - 6, desLine);
 
         } else {
@@ -209,9 +212,9 @@ public class OtherFunctions {
             //desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = replaceMoviePoster(movieNameWithSpaces, desLine);
             desLine = replaceMovieTier(movieTier, desLine);
+            desLine = movieLength(movieReview, desLine);
             newHomeContentArrList.set(targetLine, desLine);
         }
-
         String newContentRev2 = String.join("\n", newHomeContentArrList);
         return newContentRev2;
     }
@@ -341,19 +344,20 @@ public class OtherFunctions {
                 String responseString = posterResp.toString();
 
                 if (responseString.equals("{\"Response\":\"False\",\"Error\":\"Movie not found!\"}")) {
-                    poster = "error";
+                    poster = "boo";
                 } else {
                     poster = moviePoster.getPoster();
+                    poster = "'" + poster + "'";
                 }
                 // You would typically parse the JSON response here
             } else {
                 System.err.println("API request failed with status code: " + response.statusCode());
-                poster = "error";
+                poster = "boo";
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            poster = "error";
+            poster = "boo";
         }
         return poster;
     }
@@ -497,17 +501,42 @@ public class OtherFunctions {
         String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"));
         String desSubString = "moviePoster";
         int startMovPostInd = desLine.indexOf(desSubString) + desSubString.length();
-        int endMovPostInd = desLine.indexOf("', tier:");
-        String oldMoviePoster = desLine.substring(startMovPostInd + 3, endMovPostInd);
+        // int endMovPostInd = desLine.indexOf("', tier:");
+        int endMovPostInd = desLine.indexOf(", tier:");
+        //String oldMoviePoster = desLine.substring(startMovPostInd + 3, endMovPostInd);
+        String oldMoviePoster = desLine.substring(startMovPostInd + 2, endMovPostInd);
         desLine = desLine.replace(oldMoviePoster, poster);
+        return desLine;
+    }
+
+    public static String movieLength(String movieReview, String desLine) throws JsonProcessingException {
+        int wordCount = countWords(movieReview);
+        String desSubString = "longReview: '";
+        int startRevInd = desLine.indexOf(desSubString) + desSubString.length();
+        int endRevInd = startRevInd+1;
+        String oldRev = desLine.substring(startRevInd, endRevInd);
+        String newRev;
+        if (wordCount > 5){
+            newRev = "Y";
+        }
+        else{
+            newRev = "N";
+        }
+        int start = desLine.lastIndexOf(oldRev);
+        StringBuilder builder = new StringBuilder();
+        builder.append(desLine.substring(0, start));
+        builder.append(newRev);
+        builder.append(desLine.substring(start + oldRev.length()));
+        desLine = builder.toString();
         return desLine;
     }
 
     public static String replaceMovieTier(String movieTier, String desLine) throws JsonProcessingException {
         String desSubString = "tier: ";
-        String desSubStringEnd = "'},";
+        String desSubStringEnd = "', longReview: ";
         int startTierInd = desLine.indexOf(desSubString) + desSubString.length();
         int endTierInd = desLine.indexOf(desSubStringEnd);
+        //int endTierInd = startTierInd+1;
         //String oldTier = desLine.substring(startTierInd + 1, startTierInd + 2);
         String oldTier = desLine.substring(startTierInd + 1, endTierInd);
         int start = desLine.lastIndexOf(oldTier);
@@ -519,7 +548,7 @@ public class OtherFunctions {
         return desLine;
     }
 
-    public static String editTier(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String movieTier) throws IOException {
+    public static String editTier(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String movieTier, String movieReview) throws IOException {
         Constants constants = new Constants();
 
         String gitToken = System.getenv("HEDGEHOG");
@@ -542,11 +571,24 @@ public class OtherFunctions {
         desLine = newHomeContentArrList.get(targetLine).toString();
 
         desLine = replaceMovieTier(movieTier, desLine);
+        desLine = movieLength(movieReview, desLine);
         newHomeContentArrList.set(targetLine, desLine);
 
         String newContentRev2 = String.join("\n", newHomeContentArrList);
         return newContentRev2;
 
+    }
+
+    public static int countWords(String text) {
+        if (text == null || text.isEmpty()) {
+            return 0;
+        }
+
+        // Trim leading/trailing spaces and split by one or more whitespace characters (\\s+)
+        String[] words = text.trim().split("\\s+");
+
+        // Return the length of the resulting array
+        return words.length;
     }
 }
 
