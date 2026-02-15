@@ -39,19 +39,20 @@ public class EditController {
         String movieNameWithSpaces = movieNameAsEntered.substring(0, movieNameAsEntered.length());
         String movieNameWithoutSpaces = movieNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
         movieNameWithoutSpaces = movieNameWithoutSpaces.replaceAll("[^a-zA-Z0-9]", "");
+        String movieQuery = movieNameWithSpaces;
 
-        if (movieNameWithSpaces.contains("(")){
+        if (movieQuery.contains("(")){
             int n = 0;
-            int index = movieNameWithSpaces.indexOf("(");
+            int index = movieQuery.indexOf("(");
             for (int i = 1; i < 5; i++) {
-                char V =  movieNameWithSpaces.charAt(index+i);
+                char V =  movieQuery.charAt(index+i);
                 if (Character.isDigit(V)){
                     n = n+1;
                 }
             }
             if (n==4){
                 Integer[] indices = {index, index+1, index+2, index+3, index+4, index+5};
-                movieNameWithSpaces = removeCharsAtIndices(movieNameWithSpaces,indices);
+                movieQuery = removeCharsAtIndices(movieQuery,indices);
             }
         }
 
@@ -59,7 +60,7 @@ public class EditController {
         String origEditedNameWithoutSpaces = origEditedNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
         origEditedNameWithoutSpaces = origEditedNameWithoutSpaces.replaceAll("[^a-zA-Z0-9]", "");
 
-        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview, movieTier, movieYear);
+        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview, movieTier, movieYear, movieQuery);
 
         Map<String, String> filesContent = new HashMap<>();
         // Adding items
@@ -71,12 +72,12 @@ public class EditController {
             String origNameWithoutSpaces = origNameList.get(0);
             String origNameWithSpaces = origNameList.get(1);
             newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces);
-            newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent,movieReview, movieYear);
+            newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent,movieReview, movieYear, movieQuery);
             newHomeContent = otherFunctions.addImportLine(movieNameWithoutSpaces, origEditedNameWithoutSpaces, newHomeContent, submitFlag);
 
             filesContent.put("src/pages/Home.js", newHomeContent);
         } else {
-            newHomeContent = otherFunctions.editTier(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, movieTier, movieReview, movieYear);
+            newHomeContent = otherFunctions.editTier(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, movieTier, movieReview, movieYear, movieQuery);
             filesContent.put("src/pages/Home.js", newHomeContent);
         }
 

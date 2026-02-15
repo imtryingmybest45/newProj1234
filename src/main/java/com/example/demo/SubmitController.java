@@ -37,32 +37,33 @@ public class SubmitController {
         String movieNameWithSpaces = movieNameAsEntered.substring(0, movieNameAsEntered.length());
         String movieNameWithoutSpaces = movieNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
         movieNameWithoutSpaces = movieNameWithoutSpaces.replaceAll("[^a-zA-Z0-9]", "");
+        String movieQuery = movieNameWithSpaces;
 
-        if (movieNameWithSpaces.contains("(")){
+        if (movieQuery.contains("(")){
             int n = 0;
-            int index = movieNameWithSpaces.indexOf("(");
+            int index = movieQuery.indexOf("(");
             for (int i = 1; i < 5; i++) {
-                char V =  movieNameWithSpaces.charAt(index+i);
+                char V =  movieQuery.charAt(index+i);
                 if (Character.isDigit(V)){
                     n = n+1;
                 }
             }
             if (n==4){
                 Integer[] indices = {index-1, index, index+1, index+2, index+3, index+4, index+5};
-                movieNameWithSpaces = removeCharsAtIndices(movieNameWithSpaces,indices);
+                movieQuery = removeCharsAtIndices(movieQuery,indices);
             }
         }
 
         String origEditedNameWithSpaces = movieNameWithSpaces;
         String origEditedNameWithoutSpaces = movieNameWithoutSpaces;
 
-        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview, movieTier, movieYear);
+        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview, movieTier, movieYear, movieQuery);
 
         List<String> origNameList = otherFunctions.getOrigName();
         String origNameWithoutSpaces = origNameList.get(0);
         String origNameWithSpaces = origNameList.get(1);
         String newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces);
-        newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent, movieReview, movieYear);
+        newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent, movieReview, movieYear, movieQuery);
         newHomeContent = otherFunctions.addImportLine(movieNameWithoutSpaces, origEditedNameWithoutSpaces, newHomeContent, submitFlag);
 
         Map<String, String> filesContent = new HashMap<>();

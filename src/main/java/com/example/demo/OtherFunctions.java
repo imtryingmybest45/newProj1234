@@ -55,7 +55,7 @@ public class OtherFunctions {
         return theLineNum;
     }
 
-    public static String writeNewPagesFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String movieReview, String movieTier, String movieYear) throws IOException {
+    public static String writeNewPagesFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String movieReview, String movieTier, String movieYear, String movieQuery) throws IOException {
 
         Constants constants = new Constants();
 
@@ -73,7 +73,7 @@ public class OtherFunctions {
 
         String fileContent = modifyJsContent(funcFileContent, movieNameWithoutSpaces);
         // String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
-        String movieNameEncoded = encodeMovieURL(movieNameWithSpaces);
+        String movieNameEncoded = encodeMovieURL(movieQuery);
         //String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"),movieYear);
         String poster = getMoviePoster(movieNameEncoded,movieYear);
         if (Objects.equals(poster, "'N/A'")) {
@@ -185,7 +185,7 @@ public class OtherFunctions {
         return newHomeContent;
     }
 
-    public static String editLinksAppFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String origNameWithSpaces, String origNameWithoutSpaces, String movieTier, String newHomeContent, String movieReview, String movieYear) throws IOException {
+    public static String editLinksAppFile(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String origNameWithSpaces, String origNameWithoutSpaces, String movieTier, String newHomeContent, String movieReview, String movieYear, String movieQuery) throws IOException {
 
         String[] newHomeContentList = newHomeContent.split("\r?\n");
         String desLine = "";
@@ -204,7 +204,7 @@ public class OtherFunctions {
             //desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = desLine.replaceFirst("\"/" + origNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
             //desLine = desLine.replaceFirst("\"" + origNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
-            desLine = replaceMoviePoster(movieNameWithSpaces, desLine, movieYear);
+            desLine = replaceMoviePoster(movieQuery, desLine, movieYear);
             desLine = replaceMovieTier(movieTier, desLine);
             desLine = movieLength(movieReview, desLine);
             newHomeContentArrList.add(targetLine - 6, desLine);
@@ -217,7 +217,7 @@ public class OtherFunctions {
             //desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
             desLine = desLine.replaceFirst("\"/" + origEditedNameWithoutSpaces + "\"", "\"/" + movieNameWithoutSpaces + "\"");
             //desLine = desLine.replaceFirst("\"" + origEditedNameWithSpaces + "\"", "\"" + movieNameWithSpaces + "\"");
-            desLine = replaceMoviePoster(movieNameWithSpaces, desLine, movieYear);
+            desLine = replaceMoviePoster(movieQuery, desLine, movieYear);
             desLine = replaceMovieTier(movieTier, desLine);
             desLine = movieLength(movieReview, desLine);
             newHomeContentArrList.set(targetLine, desLine);
@@ -523,9 +523,9 @@ public class OtherFunctions {
         return decodedString;
     }
 
-    public static String replaceMoviePoster(String movieNameWithSpaces, String desLine, String movieYear) throws JsonProcessingException, UnsupportedEncodingException {
+    public static String replaceMoviePoster(String movieQuery, String desLine, String movieYear) throws JsonProcessingException, UnsupportedEncodingException {
         //String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
-        String movieNameEncoded = encodeMovieURL(movieNameWithSpaces);
+        String movieNameEncoded = encodeMovieURL(movieQuery);
         //String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"), movieYear);
         String poster = getMoviePoster(movieNameEncoded, movieYear);
         if (Objects.equals(poster, "'N/A'")) {
@@ -580,7 +580,7 @@ public class OtherFunctions {
         return desLine;
     }
 
-    public static String editTier(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String movieTier, String movieReview, String movieYear) throws IOException {
+    public static String editTier(String movieNameWithSpaces, String movieNameWithoutSpaces, String origEditedNameWithSpaces, String origEditedNameWithoutSpaces, String movieTier, String movieReview, String movieYear, String movieQuery) throws IOException {
         Constants constants = new Constants();
 
         String gitToken = System.getenv("HEDGEHOG");
@@ -604,7 +604,7 @@ public class OtherFunctions {
 
         desLine = replaceMovieTier(movieTier, desLine);
         desLine = movieLength(movieReview, desLine);
-        desLine = replaceMoviePoster(movieNameWithSpaces,desLine,movieYear);
+        desLine = replaceMoviePoster(movieQuery,desLine,movieYear);
         newHomeContentArrList.set(targetLine, desLine);
 
         String newContentRev2 = String.join("\n", newHomeContentArrList);
