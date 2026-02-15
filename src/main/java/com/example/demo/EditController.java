@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.*;
 
+import static com.example.demo.OtherFunctions.removeCharsAtIndices;
+
 @RestController
 public class EditController {
     @CrossOrigin(origins = {"http://localhost:3000",
@@ -37,6 +39,21 @@ public class EditController {
         String movieNameWithSpaces = movieNameAsEntered.substring(0, movieNameAsEntered.length());
         String movieNameWithoutSpaces = movieNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
         movieNameWithoutSpaces = movieNameWithoutSpaces.replaceAll("[^a-zA-Z0-9]", "");
+
+        if (movieNameWithSpaces.contains("(")){
+            int n = 0;
+            int index = movieNameWithSpaces.indexOf("(");
+            for (int i = 1; i < 5; i++) {
+                char V =  movieNameWithSpaces.charAt(index+i);
+                if (Character.isDigit(V)){
+                    n = n+1;
+                }
+            }
+            if (n==4){
+                Integer[] indices = {index, index+1, index+2, index+3, index+4, index+5};
+                movieNameWithSpaces = removeCharsAtIndices(movieNameWithSpaces,indices);
+            }
+        }
 
         String origEditedNameWithSpaces = origEditedName.substring(0, origEditedName.length());
         String origEditedNameWithoutSpaces = origEditedNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces

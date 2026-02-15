@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kohsuke.github.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -70,8 +72,10 @@ public class OtherFunctions {
         String funcFileContent = new String(funcTemplateFileContent.read().readAllBytes(), "UTF-8");
 
         String fileContent = modifyJsContent(funcFileContent, movieNameWithoutSpaces);
-        String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
-        String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"),movieYear);
+        // String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
+        String movieNameEncoded = encodeMovieURL(movieNameWithSpaces);
+        //String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"),movieYear);
+        String poster = getMoviePoster(movieNameEncoded,movieYear);
         if (Objects.equals(poster, "'N/A'")) {
             poster = "boo";
         }
@@ -503,6 +507,14 @@ public class OtherFunctions {
         // System.out.println("Successfully committed " + filesContent.size() + " files in a single commit: " + newCommit.getHtmlUrl());
     }
 
+    public static String encodeMovieURL(String movieQuery) {
+
+        // It is critical to specify the character encoding, preferably UTF-8
+        String encodedString = URLEncoder.encode(movieQuery, StandardCharsets.UTF_8);
+
+        return encodedString;
+    }
+
     public static String decodeMovieURL(String movieQuery) {
 
         // It is critical to specify the character encoding, preferably UTF-8
@@ -511,9 +523,11 @@ public class OtherFunctions {
         return decodedString;
     }
 
-    public static String replaceMoviePoster(String movieNameWithSpaces, String desLine, String movieYear) throws JsonProcessingException {
-        String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
-        String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"), movieYear);
+    public static String replaceMoviePoster(String movieNameWithSpaces, String desLine, String movieYear) throws JsonProcessingException, UnsupportedEncodingException {
+        //String mNameWSpacesNoSpecChars = movieNameWithSpaces.replaceAll("[^a-zA-Z0-9 ]", "");
+        String movieNameEncoded = encodeMovieURL(movieNameWithSpaces);
+        //String poster = getMoviePoster(mNameWSpacesNoSpecChars.replaceAll(" ", "+"), movieYear);
+        String poster = getMoviePoster(movieNameEncoded, movieYear);
         if (Objects.equals(poster, "'N/A'")) {
             poster = "boo";
         }
@@ -609,7 +623,21 @@ public class OtherFunctions {
         // Return the length of the resulting array
         return words.length;
     }
-}
+        public static String removeCharsAtIndices(String originalStr, Integer[] indicesToRemove) {
+            // Convert array of indices to a Set for faster lookups (O(1) average time complexity)
+            Set<Integer> indexSet = new HashSet<>(Arrays.asList(indicesToRemove));
+            StringBuilder result = new StringBuilder(originalStr.length() - indexSet.size());
+
+            for (int i = 0; i < originalStr.length(); i++) {
+                // If the current index is not in the set of indices to remove, append the character
+                if (!indexSet.contains(i)) {
+                    result.append(originalStr.charAt(i));
+                }
+            }
+
+            return result.toString();
+        }
+    }
 
 
 
