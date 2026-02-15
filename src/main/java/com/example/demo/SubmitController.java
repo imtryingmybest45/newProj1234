@@ -30,6 +30,7 @@ public class SubmitController {
         String movieNameAsEntered = requestDTO.getMovieName(); //This is the movie name without spaces
         String movieReview = requestDTO.getMovieReview();
         String movieTier = requestDTO.getMovieTier();
+        String movieYear = requestDTO.getMovieYear();
 
         String movieNameWithSpaces = movieNameAsEntered.substring(0, movieNameAsEntered.length());
         String movieNameWithoutSpaces = movieNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
@@ -38,13 +39,13 @@ public class SubmitController {
         String origEditedNameWithSpaces = movieNameWithSpaces;
         String origEditedNameWithoutSpaces = movieNameWithoutSpaces;
 
-        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview, movieTier);
+        String newPagesFileContent = otherFunctions.writeNewPagesFile(movieNameWithSpaces, movieNameWithoutSpaces, movieReview, movieTier, movieYear);
 
         List<String> origNameList = otherFunctions.getOrigName();
         String origNameWithoutSpaces = origNameList.get(0);
         String origNameWithSpaces = origNameList.get(1);
         String newHomeContent = otherFunctions.editRoutesAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces);
-        newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent, movieReview);
+        newHomeContent = otherFunctions.editLinksAppFile(movieNameWithSpaces, movieNameWithoutSpaces, origEditedNameWithSpaces, origEditedNameWithoutSpaces, origNameWithSpaces, origNameWithoutSpaces, movieTier, newHomeContent, movieReview, movieYear);
         newHomeContent = otherFunctions.addImportLine(movieNameWithoutSpaces, origEditedNameWithoutSpaces, newHomeContent, submitFlag);
 
         Map<String, String> filesContent = new HashMap<>();

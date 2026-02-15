@@ -5,6 +5,7 @@ public class MyEditDTO {
     private String movieReview;
     private String origMovName;
     private String movieTier;
+    private String movieYear;
 
     public void setMovieName(String movieName) {
         this.movieName = movieName;
@@ -22,6 +23,8 @@ public class MyEditDTO {
         this.movieTier = movieTier;
     }
 
+    public void setMovieYear(String movieYear) {this.movieYear = movieYear;}
+
     public String getMovieName() {
         return movieName;
     }
@@ -35,4 +38,5 @@ public class MyEditDTO {
     public String getMovieTier() {
         return movieTier;
     }
+    public String getMovieYear() {return movieYear;}
 }
