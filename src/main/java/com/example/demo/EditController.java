@@ -39,6 +39,12 @@ public class EditController {
         String movieNameWithSpaces = movieNameAsEntered.substring(0, movieNameAsEntered.length());
         String movieNameWithoutSpaces = movieNameWithSpaces.replaceAll("\\s", ""); //movieName is the inputted name without spaces
         movieNameWithoutSpaces = movieNameWithoutSpaces.replaceAll("[^a-zA-Z0-9]", "");
+
+        char firstChar = movieNameWithoutSpaces.charAt(0);
+        if (Character.isDigit(firstChar)){
+            movieNameWithoutSpaces = "X"+movieNameWithoutSpaces;
+        }
+        
         String movieQuery = movieNameWithSpaces;
 
         if (movieQuery.contains("(")){
