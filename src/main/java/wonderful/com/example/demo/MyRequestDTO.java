@@ -1,4 +1,4 @@
-package com.example.demo;
+package wonderful.com.example.demo;
 
 public class MyRequestDTO {
     private String movieName;
@@ -24,10 +24,12 @@ public class MyRequestDTO {
         return movieName;
     }
     public String getMovieTier() {
-        return movieTier;
+        return "'"+movieTier+"'";
     }
     public String getMovieReview() {
-        return movieReview;
+        movieReview = movieReview.replace("'", "\\'");
+        return "'"+movieReview+"'";
     }
-    public String getMovieYear() {return movieYear;}
+    public String getMovieYear() {
+        return movieYear;}
 }

@@ -1,4 +1,4 @@
-package com.example.demo;
+package wonderful.com.example.demo;
 
 public class Poster {
     public String Title;
